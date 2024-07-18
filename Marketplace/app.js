@@ -9,21 +9,15 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var userRoute = require('./routes/userRoute');
-
-var paymentMethodsRouter = require('./routes/paymentMethods');
-var paymentMethodRoute = require('./routes/paymentMethodRoute');
-var shoppingCartRouter = require('./routes/shoppingCarts');
-var shoppingCartRoute = require('./routes/shoppingCartRoute');
-var orderDetailsRouter = require('./routes/orderDetails');
-var orderDetailRoute = require('./routes/orderDetailRoute');
-var ordersRouter = require('./routes/orders');
-var orderRoute = require('./routes/orderRoute');
-var db = require('./conexion/mongo');
-
 var categoryRoute = require('./routes/categoryRoute');
 var productRoute = require('./routes/productRoute');
 var reviewRoute = require('./routes/reviewRoute');
 var rolesRoute = require('./routes/rolesRoute');
+var orderDetailRoute = require('./routes/orderDetailRoute');
+var orderRoute = require('./routes/orderRoute');
+var paymentMethodRoute = require('./routes/paymentMethodRoute');
+var shoppingCartRoute = require('./routes/shoppingCartRoute');
+
 
 var app = express();
 
@@ -44,23 +38,10 @@ app.use('/apiuser', userRoute);
 app.use('/apicategory', categoryRoute);
 app.use('/apiproduct', productRoute);
 app.use('/apireview', reviewRoute);
-app.use('/apiroles', rolesRoute);
-
-//paymentMethod
-app.use('/paymentMethods', paymentMethodsRouter);
-app.use('/apipaymentMethod', paymentMethodRoute);
-
-//shoppingCart
-app.use('/shoppingCarts', shoppingCartRouter);
-app.use('/apishoppingCart', shoppingCartRoute);
-
-// order Detail
-app.use('/orderDetails', orderDetailsRouter);
 app.use('/apiorderDetail', orderDetailRoute);
-
-// order
-app.use('/orders', ordersRouter);
 app.use('/apiorder', orderRoute);
+app.use('/apipaymethod', paymentMethodRoute);
+app.use('/apishoppingCart', shoppingCartRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
