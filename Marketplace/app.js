@@ -9,7 +9,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var userRoute = require('./routes/userRoute');
-<<<<<<< HEAD
+
 var paymentMethodsRouter = require('./routes/paymentMethods');
 var paymentMethodRoute = require('./routes/paymentMethodRoute');
 var shoppingCartRouter = require('./routes/shoppingCarts');
@@ -19,17 +19,15 @@ var orderDetailRoute = require('./routes/orderDetailRoute');
 var ordersRouter = require('./routes/orders');
 var orderRoute = require('./routes/orderRoute');
 var db = require('./conexion/mongo');
-=======
+
 var categoryRoute = require('./routes/categoryRoute');
 var productRoute = require('./routes/productRoute');
 var reviewRoute = require('./routes/reviewRoute');
 var rolesRoute = require('./routes/rolesRoute');
 
->>>>>>> 635739835eecb0e3f6a7b31ccf955c01faa41d7c
-
 var app = express();
 
-// view engine setup
+// view engine setu
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
