@@ -25,13 +25,13 @@ exports.getShoppingCarts = async (req, res) => {
 };
 
 
-exports.getShoppingCarttById = async (req, res) => {
+exports.getShoppingCartById = async (req, res) => {
     try {
-        const shoppingCart = await shoppingCart.findById(req.params.id);
-        if (!shoppingCart) {
+        const cart = await ShoppingCart.findById(req.params.id);
+        if (!cart) {
             return res.status(404).json({ message: 'Carrito de compras no encontrado' });
         }
-        res.status(200).json(shoppingCart);
+        res.status(200).json(cart);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener carrito de compras por ID', error: error.message });
     }
