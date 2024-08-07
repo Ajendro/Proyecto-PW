@@ -3,9 +3,9 @@ import React from 'react';
 const categories = [
   { id: 1, name: 'Cerámica', imgSrc: './herramientas/vasijas.webp', imgAlt: 'Category 1' },
   { id: 2, name: 'Tejidos', imgSrc: './herramientas/tejidos.jpg', imgAlt: 'Category 2' },
-  { id: 3, name: 'Madera', imgSrc: '/placeholder.svg', imgAlt: 'Category 3' },
-  { id: 4, name: 'Vidrio', imgSrc: '/placeholder.svg', imgAlt: 'Category 4' },
-  { id: 5, name: 'Joyería', imgSrc: '/placeholder.svg', imgAlt: 'Category 5' },
+  { id: 3, name: 'Madera', imgSrc: '/herramientas/madera.jpg', imgAlt: 'Category 3' },
+  { id: 4, name: 'Vidrio', imgSrc: '/herramientas/vidrio.jpeg', imgAlt: 'Category 4' },
+  { id: 5, name: 'Joyería', imgSrc: '/herramientas/joyeria.jpg', imgAlt: 'Category 5' },
 ];
 
 

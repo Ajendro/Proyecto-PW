@@ -1,24 +1,13 @@
-import Footer from "./components/footer";
-import Header from "./components/header";
-import Example from "./components/carrusel";
-import Products from "./components/products";
-import Form from "./components/Form";
-import CategoriaPro from "./components/categoriaPro";
+
+import { BrowserRouter } from "react-router-dom";
+import Rutes from "./rutes";
 
 export default function App() {
   return (
-   <div>
-    <Header />
     <div>
-    <Example />
-    <div style={{marginTop:"150px", marginLeft:"200px" }}>
-    <CategoriaPro/>
+      <BrowserRouter>
+        <Rutes />
+      </BrowserRouter>
     </div>
-    <Products/>
-    <Form />
-    <Footer />
-    </div>
-   </div>
-   
-  )
+  );
 }
