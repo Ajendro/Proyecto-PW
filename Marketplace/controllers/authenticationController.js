@@ -1,26 +1,14 @@
 const Authentication = require('../models/authenticationModel');
-const User = require('../models/userModel');
+
 
 exports.createAuthentication = async (req, res) => {
     try {
-        const { email, password, userId } = req.body;
-
-        // Check if the user exists
-        const existingUser = await User.findById(userId);
-        if (!existingUser) {
-            return res.status(400).json({ message: 'User not found' });
-        }
-
-        const newAuthentication = new Authentication({
-            email,
-            password,
-            user: userId,
-        });
-
-        await newAuthentication.save();
-        res.status(201).json({ message: 'Authentication created successfully', authentication: newAuthentication });
+        const { email,password, user } = req.body;
+        const newAtu = new Authentication ({ email, password, user});
+        await newAtu.save();
+        res.status(201).json({ mensaje: 'Autentificacion Creada Corretamete', reseña: newAtu });
     } catch (error) {
-        res.status(500).json({ message: 'Failed to create authentication: Internal server error', error: error.message });
+        res.status(500).json({ mensaje: 'No se pudo crear la Autentificacion', error: error.message });
     }
 };
 
