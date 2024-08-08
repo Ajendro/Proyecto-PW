@@ -1,7 +1,5 @@
 import "./loginStyle.css";
-import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css';
-
-const LoginPage = () => {
+const Login = () => {
     return (
         <div className="container" id="container">
             <div className="form-container sign-up">
@@ -52,5 +50,5 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default Login;
 
