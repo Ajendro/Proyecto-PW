@@ -1,56 +1,86 @@
-import "./loginStyle.css";
-import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css';
+import React, { useState } from "react";
+import './Login.css';
+import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 
-const LoginPage = () => {
-    return (
-        <div className="container" id="container">
-            <div className="form-container sign-up">
-                <form>
-                    <h1>Create Account</h1>
-                    <div className="social-icons">
-                        <a href="#" className="icon"><i className="fa-brands fa-google-plus-g"></i></a>
-                        <a href="#" className="icon"><i className="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" className="icon"><i className="fa-brands fa-linkedin-in"></i></a>
-                    </div>
-                    <span>or use your email for registration</span>
-                    <input type="text" placeholder="Name" />
-                    <input type="email" placeholder="Email" />
-                    <input type="password" placeholder="Password" />
-                    <button>Sign Up</button>
-                </form>
-            </div>
-            <div className="form-container sign-in">
-                <form>
-                    <h1>Sign In</h1>
-                    <div className="social-icons">
-                        <a href="#" className="icon"><i className="fa-brands fa-google-plus-g"></i></a>
-                        <a href="#" className="icon"><i className="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" className="icon"><i className="fa-brands fa-linkedin-in"></i></a>
-                    </div>
-                    <span>or use your email password</span>
-                    <input type="email" placeholder="Email" />
-                    <input type="password" placeholder="Password" />
-                    <a href="#">Forget Your Password?</a>
-                    <button>Sign In</button>
-                </form>
-            </div>
-            <div className="toggle-container">
-                <div className="toggle">
-                    <div className="toggle-panel toggle-left">
-                        <h1>Welcome Back!</h1>
-                        <p>Enter your personal details to use all of site features</p>
-                        <button className="hidden" id="login">Sign In</button>
-                    </div>
-                    <div className="toggle-panel toggle-right">
-                        <h1>Hello, Friend!</h1>
-                        <p>Register with your personal details to use all of site features</p>
-                        <button className="hidden" id="register">Sign Up</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+const Login = () => {
+  const [action, setAction] = useState('');
+
+  const registerLink = () => {
+    setAction('active');
+  };
+
+  const loginLink = () => {
+    setAction('');
+  };
+
+  // Función para volver al formulario de inicio de sesión automáticamente después de registrar
+  const handleRegisterSubmit = (e) => {
+    e.preventDefault();
+    // Aquí puedes manejar el envío del formulario de registro
+    // Luego de enviar, volver al formulario de inicio de sesión
+    setTimeout(() => {
+      setAction('');
+    }, 2000); // Regresa al inicio de sesión después de 2 segundos
+  };
+
+  return (
+    <div className={`wrapper ${action}`}>
+      <div className="form-box login">
+        <form>
+          <h1>Login</h1>
+          <div className="input-box">
+            <input type="text" placeholder="Username" required />
+            <FaUser className="icon" />
+          </div>
+          <div className="input-box">
+            <input type="password" placeholder="Password" required />
+            <FaLock className="icon" />
+          </div>
+          <div className="remember-forgot">
+            <label>
+              <input type="checkbox" />
+              Remember me
+            </label>
+            <a href="#">Forgot password?</a>
+          </div>
+          <button type="submit">Login</button>
+          <div className="register-link">
+            <p>Don't have an account? <a href="#" onClick={registerLink}>Register</a></p>
+          </div>
+        </form>
+      </div>
+
+      <div className="form-box register">
+        <form onSubmit={handleRegisterSubmit}>
+          <h1>Registration</h1>
+          <div className="input-box">
+            <input type="text" placeholder="Username" required />
+            <FaUser className="icon" />
+          </div>
+          <div className="input-box">
+            <input type="email" placeholder="Email" required />
+            <FaEnvelope className="icon" />
+          </div>
+          <div className="input-box">
+            <input type="password" placeholder="Password" required />
+            <FaLock className="icon" />
+          </div>
+          <div className="remember-forgot">
+            <label>
+              <input type="checkbox" />
+              I agree to the terms & conditions
+            </label>
+          </div>
+          <button type="submit">Register</button>
+          <div className="register-link">
+            <p>Already have an account? <a href="#" onClick={loginLink}>Login</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
-export default LoginPage;
+export default Login;
+
 
