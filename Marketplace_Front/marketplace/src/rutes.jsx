@@ -2,16 +2,32 @@ import { Routes, Route } from "react-router-dom";
 import Header from "./components/header";
 import Footer from "./components/footer";
 import Example from "./components/carrusel";
-import Product from "./components/products";
-import Categoria from "./components/categoriaPro";
 import Form from "./components/Form";
-import Carrito from "./components/carrito";
-import Pago from "./components/pago";
 
 const Formpages = () => {
   return (
     <div>
       <Header />
+
+        <Routes>
+            <Route path="/" element={<Example />} />
+            <Route path="/form" element={<Form />} />
+            <Route 
+              path="/login" 
+              element={
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                minHeight: '100vh' 
+              }}>
+              <Login />
+              </div>
+              } 
+            />
+
+        </Routes>
+
       <Routes>
         <Route
           path="/"
@@ -34,8 +50,10 @@ const Formpages = () => {
             
         } /> 
       </Routes>
+
       <Footer />
     </div>
+  
   );
 };
 
