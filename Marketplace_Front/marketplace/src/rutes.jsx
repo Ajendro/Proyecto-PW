@@ -9,6 +9,7 @@ const Formpages = () => {
   return (
     <div>
       <Header />
+
         <Routes>
             <Route path="/" element={<Example />} />
             <Route path="/form" element={<Form />} />
@@ -27,6 +28,25 @@ const Formpages = () => {
             />
 
         </Routes>
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div>
+              <Example />
+              <div style={{marginTop:"150px", marginLeft:"150px"}}>
+              <Categoria/>
+              </div>
+              
+              <Product /> 
+            </div>
+          }
+        />
+        <Route path="/form" element={<Form />} />
+        
+      </Routes>
+
       <Footer />
     </div>
   
