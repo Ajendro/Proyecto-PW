@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaUserAlt } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
+
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -75,13 +79,16 @@ const Navbar = () => {
           </button>
 
           {/* Carrito link */}
-          <Link to="/carrito" className="ml-20 mr-20">
-            <img 
-              src="https://images.vexels.com/content/141186/preview/shopping-cart-6-60a77d.png" 
-              className="h-8" 
-              alt="Carrito" 
-            />
+          <Link to="/carrito" className="flex items-center mr-10 ml-10">
+            <FaShoppingCart className="h-8 w-8 text-black" />
           </Link>
+
+          
+          <Link to="/user" className="flex items-center">
+            <FaUserAlt className="h-8 w-8 text-black" />
+          </Link>
+
+          
         </div>
 
         <div className={`items-center justify-between ${isMenuOpen ? 'block' : 'hidden'} w-full md:flex md:w-auto md:order-1`} id="navbar-search">
@@ -111,6 +118,11 @@ const Navbar = () => {
             <li>
               <Link to="/login" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Login</Link>
             </li>
+
+            <li>
+              <Link to="/about" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Acerca de Nosotros</Link>
+            </li>
+           
           </ul>
         </div>
       </div>

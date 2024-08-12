@@ -1,18 +1,20 @@
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var db = require('./conexion/mongo');
+const cors = require('cors');
+
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
 var userRoute = require('./routes/userRoute');
 var categoryRoute = require('./routes/categoryRoute');
 var productRoute = require('./routes/productRoute');
 var reviewRoute = require('./routes/reviewRoute');
-var rolesRoute = require('./routes/rolesRoute');
 var orderDetailRoute = require('./routes/orderDetailRoute');
 var orderRoute = require('./routes/orderRoute');
 var paymentMethodRoute = require('./routes/paymentMethodRoute');
@@ -20,6 +22,11 @@ var shoppingCartRoute = require('./routes/shoppingCartRoute');
 var authenticationRoute = require('./routes/authenticationRoute');
 
 var app = express();
+
+app.use(cors());
+
+
+
 
 // view engine setu
 app.set('views', path.join(__dirname, 'views'));
@@ -33,7 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/users', userRoute);
 app.use('/apiuser', userRoute);
 app.use('/apicategory', categoryRoute);
 app.use('/apiproduct', productRoute);
@@ -59,5 +66,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+
 
 module.exports = app;
