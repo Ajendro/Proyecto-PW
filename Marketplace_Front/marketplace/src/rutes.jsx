@@ -47,18 +47,13 @@ const Formpages = () => {
           element={
             <div>
               <Example />
-<<<<<<< HEAD
               <div style={{marginTop:"150px", marginLeft:"150px"}}>
-            
               </div>
-              
-  
-=======
               <div style={{ marginTop: "150px", marginLeft: "150px" }}>
                 <Categoria />
               </div>
               <ProductList cartItems={cartItems} setCartItems={setCartItems} />
->>>>>>> 54e6dd3e7431cbf0bd7e51b6069a67ef7e3a9e64
+
             </div>
           }
         />
