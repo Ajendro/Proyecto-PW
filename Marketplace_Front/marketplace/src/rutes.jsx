@@ -36,10 +36,10 @@ const Formpages = () => {
             <div>
               <Example />
               <div style={{marginTop:"150px", marginLeft:"150px"}}>
-              <Categoria/>
+            
               </div>
               
-              <Product /> 
+  
             </div>
           }
         />
