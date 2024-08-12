@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaUserAlt } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
+
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,10 +20,20 @@ const Navbar = () => {
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src="./herramientas/logo2.png" className="h-24" alt="Flowbite Logo" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Pendiente</span>
-        </Link>
+        {/* Logo and Carrito link */}
+        <div className="flex items-center space-x-3 rtl:space-x-reverse">
+          <Link to="/carrito" className="flex items-center">
+            <img 
+              src="./herramientas/logo2.png" 
+              className="h-24" 
+              alt="Logo" 
+            />
+          </Link>
+          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+            Pendiente
+          </span>
+        </div>
+
         <div className="flex md:order-2">
           <button
             type="button"
@@ -33,6 +47,7 @@ const Navbar = () => {
             </svg>
             <span className="sr-only">Search</span>
           </button>
+
           <div className="relative hidden md:block">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -49,6 +64,7 @@ const Navbar = () => {
               placeholder="Search..."
             />
           </div>
+
           <button
             onClick={toggleMenu}
             type="button"
@@ -61,10 +77,20 @@ const Navbar = () => {
               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 1h15M1 7h15M1 13h15"/>
             </svg>
           </button>
-          <div className='ml-20 mr-20'>
-            <img src="https://images.vexels.com/content/141186/preview/shopping-cart-6-60a77d.png" className="h-8" alt="Flowbite Logo" />
-          </div>
+
+          {/* Carrito link */}
+          <Link to="/carrito" className="flex items-center mr-10 ml-10">
+            <FaShoppingCart className="h-8 w-8 text-black" />
+          </Link>
+
+          
+          <Link to="/user" className="flex items-center">
+            <FaUserAlt className="h-8 w-8 text-black" />
+          </Link>
+
+          
         </div>
+
         <div className={`items-center justify-between ${isMenuOpen ? 'block' : 'hidden'} w-full md:flex md:w-auto md:order-1`} id="navbar-search">
           <div className="relative mt-3 md:hidden">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -81,9 +107,10 @@ const Navbar = () => {
               placeholder="Search..."
             />
           </div>
+
           <ul className="flex flex-col p-4 md:p-0 mt-4 font-bold font-serif border border-gray-100 rounded-lg bg-gray-50 md:space-x-10 ml-30 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <li>
-              <Link to="" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Inicio</Link>
+              <Link to="/" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Inicio</Link>
             </li>
             <li>
               <Link to="/form" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contactanos</Link>
@@ -91,6 +118,11 @@ const Navbar = () => {
             <li>
               <Link to="/login" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Login</Link>
             </li>
+
+            <li>
+              <Link to="/about" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Acerca de Nosotros</Link>
+            </li>
+           
           </ul>
         </div>
       </div>
