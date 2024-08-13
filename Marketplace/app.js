@@ -18,6 +18,7 @@ var orderRoute = require('./routes/orderRoute');
 var paymentMethodRoute = require('./routes/paymentMethodRoute');
 var shoppingCartRoute = require('./routes/shoppingCartRoute');
 var authenticationRoute = require('./routes/authenticationRoute');
+var formRoute = require('./routes/formRoute');
 
 var app = express();
 
@@ -43,6 +44,7 @@ app.use('/apiorder', orderRoute);
 app.use('/apipaymethod', paymentMethodRoute);
 app.use('/apishoppingCart', shoppingCartRoute);
 app.use('/apiauthentication', authenticationRoute);
+app.use('/apiform', formRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
