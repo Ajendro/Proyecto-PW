@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const ProductList = ({ cartItems, setCartItems }) => {
     const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState({}); // Nuevo estado para las categorías
 
     const fetchProducts = async () => {
         try {
@@ -21,6 +22,25 @@ const ProductList = ({ cartItems, setCartItems }) => {
         }
     };
 
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch('http://localhost:4000/apicategory/categories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const dataJson = await response.json();
+            const categoriesById = dataJson.reduce((acc, category) => {
+                acc[category._id] = category.name;
+                return acc;
+            }, {});
+            setCategories(categoriesById);
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    };
+
     useEffect(() => {
         const loadProducts = async () => {
             const data = await fetchProducts();
@@ -30,15 +50,21 @@ const ProductList = ({ cartItems, setCartItems }) => {
         loadProducts();
     }, []);
 
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
     const handleAddToCart = (product) => {
-        const existingProduct = cartItems.find(item => item.id === product.id);
+        const existingProduct = cartItems.find(item => item.product._id === product._id);
 
         if (existingProduct) {
             setCartItems(cartItems.map(item =>
-                item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+                item.product._id === product._id
+                    ? { ...item, quantity: item.quantity + 1 }
+                    : item
             ));
         } else {
-            setCartItems([...cartItems, { ...product, quantity: 1 }]);
+            setCartItems([...cartItems, { product: product, quantity: 1 }]);
         }
     };
 
@@ -53,7 +79,7 @@ const ProductList = ({ cartItems, setCartItems }) => {
                             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                                 <img
                                     alt={product.name}
-                                    src={product.Productimage}  
+                                    src={product.Productimage}
                                     className="h-full w-full object-cover object-center group-hover:opacity-75"
                                 />
                             </div>
@@ -61,7 +87,9 @@ const ProductList = ({ cartItems, setCartItems }) => {
                             <p className="mt-1 text-lg font-medium text-gray-900">${product.price.toFixed(2)}</p>
                             <p className="mt-1 text-sm text-gray-500">{product.description}</p>
                             {product.category && (
-                                <p className="mt-1 text-sm text-gray-500">Categoría: {product.category.name}</p>
+                                <p className="mt-1 text-sm text-gray-500">
+                                    Categoría: {categories[product.category] || product.category}
+                                </p>
                             )}
                             {product.reviews && product.reviews.length > 0 && (
                                 <div className="mt-2">
@@ -91,7 +119,6 @@ const ProductList = ({ cartItems, setCartItems }) => {
                         Ir al Carrito
                     </Link>
                 </div>
-                
             </main>
         </div>
     );

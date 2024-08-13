@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PaymentForm = () => {
   const [formData, setFormData] = useState({
+    email: '',
     cardNumber: '',
     expiry: '',
     cvc: '',
     name: '',
     address: '',
     zip: '',
-    ownerName: ''
+    ownerName: '',
   });
+
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -19,10 +23,31 @@ const PaymentForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted:', formData);
+    try {
+      const response = await fetch('http://localhost:4000/apipaymethod/paymentMethodscreate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Form submitted:', data);
+      alert('Método de pago registrado con éxito.');
+
+      // Redirige a la página principal después del envío exitoso
+      navigate('/');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Error al enviar el formulario. Verifica la consola para más detalles.');
+    }
   };
 
   return (
@@ -34,7 +59,19 @@ const PaymentForm = () => {
       <div className="p-6">
         <form className="grid gap-4" onSubmit={handleSubmit}>
           <div className="grid gap-2">
-            <label className="text-sm font-medium leading-none" htmlFor="card-number">
+            <label className="text-sm font-medium leading-none" htmlFor="email">
+              Correo electrónico
+            </label>
+            <input
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              id="email"
+              placeholder="Ingresa tu correo electrónico"
+              value={formData.email} // Cambiado de userEmail a email
+              onChange={handleChange}
+            />
+          </div>
+          <div className="grid gap-2">
+            <label className="text-sm font-medium leading-none" htmlFor="cardNumber">
               Número de tarjeta
             </label>
             <input
@@ -50,35 +87,9 @@ const PaymentForm = () => {
               <label className="text-sm font-medium leading-none" htmlFor="expiry">
                 Vencimiento
               </label>
-              <button
-                type="button"
-                role="combobox"
-                aria-controls="expiry"
-                aria-expanded="false"
-                className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                id="expiry"
-              >
-                <span style={{ pointerEvents: 'none' }}>MM/AA</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-4 w-4 opacity-50"
-                  aria-hidden="true"
-                >
-                  <path d="m6 9 6 6 6-6"></path>
-                </svg>
-              </button>
               <select
                 id="expiry"
-                aria-hidden="true"
-                style={{ position: 'absolute', border: 0, width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap' }}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 value={formData.expiry}
                 onChange={handleChange}
               >
@@ -149,7 +160,7 @@ const PaymentForm = () => {
             </div>
           </div>
           <div className="grid gap-2">
-            <label className="text-sm font-medium leading-none" htmlFor="owner-name">
+            <label className="text-sm font-medium leading-none" htmlFor="ownerName">
               Nombre del titular
             </label>
             <input
@@ -173,3 +184,4 @@ const PaymentForm = () => {
 };
 
 export default PaymentForm;
+

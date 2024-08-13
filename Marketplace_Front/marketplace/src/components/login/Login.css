@@ -14,12 +14,12 @@ body {
 .wrapper {
     position: relative;
     width: 420px;
-    background: rgba(0, 0, 0, 0.5);
-    border: 2px solid rgba(255, 251, 251, 0.1);
+    background: rgba(255, 255, 255, 0.573);
+    border: 2px solid rgb(0, 0, 0);
     backdrop-filter: blur(30px);
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(246, 243, 243, 0.2);
-    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0);
+    color: #050505;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -77,23 +77,23 @@ form h1 {
     background: transparent;
     border: none;
     outline: none;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(0, 0, 0, 0.1);
     border-radius: 40px;
     font-size: 16px;
-    color: #fff;
+    color: #000000;
     padding: 0 45px 0 20px;
     box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho total */
 }
 
 .input-box input::placeholder {
-    color: #fff;
+    color: #000000;
 }
 
 .input-box select {
     -webkit-appearance: none; /* Elimina el estilo predeterminado en Chrome y Safari */
     -moz-appearance: none; /* Elimina el estilo predeterminado en Firefox */
     appearance: none; /* Elimina el estilo predeterminado en otros navegadores */
-    background-color: #333; /* Ajusta el color de fondo para que sea consistente con el diseño */
+    background-color: #f6f6f6; /* Ajusta el color de fondo para que sea consistente con el diseño */
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 6"><path d="M4 0l4 4H0L4 0z" fill="%23fff"/></svg>'); /* Flecha de selección blanca */
     background-repeat: no-repeat;
     background-position: right 10px center; /* Posición de la flecha */
@@ -116,12 +116,12 @@ form h1 {
 }
 
 .remember-forgot label input {
-    accent-color: #fff;
+    accent-color: #ffffff;
     margin-right: 4px;
 }
 
 .remember-forgot a {
-    color: #fff;
+    color: #000000;
     text-decoration: none;
 }
 
@@ -132,14 +132,14 @@ form h1 {
 .button {
     width: 100%;
     height: 45px;
-    background: #6c757d; /* Color gris plomo */
+    background: #005eb0; /* Color gris plomo */
     border: none;
     outline: none;
     border-radius: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     font-size: 16px;
-    color: #fff; /* Texto blanco */
+    color: #ffffff; /* Texto blanco */
     font-weight: 700;
     text-align: center; /* Centra el texto horizontalmente */
     display: flex; /* Usa Flexbox para alinear el contenido */
@@ -150,11 +150,11 @@ form h1 {
 }
 
 .button:hover {
-    background-color: #5a6268; /* Gris más oscuro para el hover */
+    background-color: #17c5348a; /* Gris más oscuro para el hover */
 }
 
 .button:active {
-    background-color: #4e555b; /* Gris aún más oscuro para cuando se presiona */
+    background-color: #ec0000; /* Gris aún más oscuro para cuando se presiona */
 }
 
 .register-link {
@@ -164,7 +164,7 @@ form h1 {
 }
 
 .register-link p a {
-    color: #fff;
+    color: #07c300;
     text-decoration: none;
     font-weight: 600;
 }

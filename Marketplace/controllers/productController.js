@@ -14,7 +14,6 @@ exports.createProduct = async (req, res) => {
             description,
             price,
             category,
-            reviews,
             Productimage:imageUrl
         });
 

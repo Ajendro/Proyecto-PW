@@ -14,8 +14,6 @@ var usersRouter = require('./routes/users');
 var userRoute = require('./routes/userRoute');
 var categoryRoute = require('./routes/categoryRoute');
 var productRoute = require('./routes/productRoute');
-var reviewRoute = require('./routes/reviewRoute');
-var orderDetailRoute = require('./routes/orderDetailRoute');
 var orderRoute = require('./routes/orderRoute');
 var paymentMethodRoute = require('./routes/paymentMethodRoute');
 var shoppingCartRoute = require('./routes/shoppingCartRoute');
@@ -24,9 +22,6 @@ var authenticationRoute = require('./routes/authenticationRoute');
 var app = express();
 
 app.use(cors());
-
-
-
 
 // view engine setu
 app.set('views', path.join(__dirname, 'views'));
@@ -44,8 +39,6 @@ app.use('/users', userRoute);
 app.use('/apiuser', userRoute);
 app.use('/apicategory', categoryRoute);
 app.use('/apiproduct', productRoute);
-app.use('/apireview', reviewRoute);
-app.use('/apiorderDetail', orderDetailRoute);
 app.use('/apiorder', orderRoute);
 app.use('/apipaymethod', paymentMethodRoute);
 app.use('/apishoppingCart', shoppingCartRoute);
