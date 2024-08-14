@@ -6,7 +6,6 @@ import Example from "./components/carrusel";
 import Form from "./components/Form";
 import Pago from "./components/pago";
 import Cart from "./components/carrito";
-import Categoria from "./components/categoriaPro";
 import ProductList from "./components/products";
 import Login from "./components/login/login";
 import Aboaut from "./components/about";
@@ -49,13 +48,9 @@ const Formpages = () => {
           element={
             <div>
               <Example />
-              <div style={{marginTop:"150px", marginLeft:"150px"}}>
-              </div>
               <div style={{ marginTop: "150px", marginLeft: "150px" }}>
-                <Categoria />
               </div>
               <ProductList cartItems={cartItems} setCartItems={setCartItems} />
-
             </div>
           }
         />

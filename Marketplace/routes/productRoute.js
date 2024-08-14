@@ -3,10 +3,10 @@ const router = express.Router();
 const upload = require('../config/imagenes'); 
 const productController = require('../controllers/productController');
 
-router.post('/productscreate',upload.single('Productimage'),productController.createProduct);
+router.post('/productscreate',upload.single('productImage'),productController.createProduct);
 router.post('/products', productController.getProducts);
 router.post('/product/:id', productController.getProductById);
-router.put('/updateproducts/:id',upload.single('Productimage'), productController.updateProduct);
+router.put('/updateproducts/:id',upload.single('productImage'), productController.updateProduct);
 router.delete('/deleteproducts/:id', productController.deleteProduct);
 
 module.exports = router;

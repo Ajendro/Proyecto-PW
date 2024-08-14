@@ -1,18 +1,20 @@
+// ProductList.jsx
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 const ProductList = ({ cartItems, setCartItems }) => {
     const [products, setProducts] = useState([]);
-    const [categories, setCategories] = useState({}); // Nuevo estado para las categorías
+    const [categories, setCategories] = useState({});
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const { categoryId } = useParams(); // Obtén el categoryId de la URL
 
-    const fetchProducts = async () => {
+    const fetchProducts = async (categoryId) => {
         try {
-            const response = await fetch('http://localhost:4000/apiproduct/products', {
+            const response = await fetch('http://localhost:4000/apiproduct/products' + (categoryId ? `?categoryId=${categoryId}` : ''), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({})
+                }
             });
             const dataJson = await response.json();
             return dataJson;
@@ -43,12 +45,12 @@ const ProductList = ({ cartItems, setCartItems }) => {
 
     useEffect(() => {
         const loadProducts = async () => {
-            const data = await fetchProducts();
+            const data = await fetchProducts(selectedCategory); // Usa selectedCategory en lugar de categoryId
             setProducts(data);
         };
 
         loadProducts();
-    }, []);
+    }, [selectedCategory]); // Dependencia de selectedCategory para actualizar los productos al cambiar la categoría
 
     useEffect(() => {
         fetchCategories();
@@ -68,10 +70,31 @@ const ProductList = ({ cartItems, setCartItems }) => {
         }
     };
 
+    const handleCategoryChange = (event) => {
+        setSelectedCategory(event.target.value); // Actualiza la categoría seleccionada
+    };
+
     return (
-        <div className="relative">
-            <main className="flex-1 mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-                <h2 className="text-2xl mb-10 font-bold tracking-tight text-gray-900">Productos</h2>
+        <div className="relative " >
+            <main className="flex-1 mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8 mt-[-150px]">
+                <h2 className="text-2xl mb-10 font-bold tracking-tight text-gray-900">
+                    Productos en la categoría: {categories[selectedCategory] || 'Todos los productos'}
+                </h2>
+
+                <div className="mb-4">
+                    <label htmlFor="category-select" className="block text-sm font-medium text-gray-700">Filtrar por categoría</label>
+                    <select
+                        id="category-select"
+                        value={selectedCategory}
+                        onChange={handleCategoryChange}
+                        className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+                        <option value="">Todas las categorías</option>
+                        {Object.entries(categories).map(([id, name]) => (
+                            <option key={id} value={id}>{name}</option>
+                        ))}
+                    </select>
+                </div>
 
                 <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
                     {products.map((product) => (
@@ -125,3 +148,4 @@ const ProductList = ({ cartItems, setCartItems }) => {
 };
 
 export default ProductList;
+

@@ -1,16 +1,16 @@
-const User = require('../models/userModel');
-const multer = require('multer');
-const path = require('path');
-const Authentication = require('../models/authenticationModel');
 const bcrypt = require('bcrypt');
+const User = require('../models/userModel');
+const path = require('path');
+
+// Crear Usuario
 exports.createUser = async (req, res) => {
     try {
         const { username, phoneNumber, fullName, birthDate, gender, bio, role, email, password } = req.body;
-        let profilePicturePath = null;
+        let profilePictureUrl = null;
 
         // Validar los datos del usuario
-        const validRoles = ['vendedor', 'cliente'];
-        if (!validRoles.includes(role.toLowerCase())) {
+        const validRoles = ['Vendedor', 'Cliente'];
+        if (!validRoles.includes(role)) {
             return res.status(400).json({ error: 'Rol no válido' });
         }
 
@@ -19,13 +19,18 @@ exports.createUser = async (req, res) => {
         }
 
         // Validar que el email no esté ya registrado
-        const existingUser = await Authentication.findOne({ email });
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ error: 'El email ya está registrado' });
         }
 
         // Hash de la contraseña
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Manejo de la imagen de perfil si existe
+        if (req.file) {
+            profilePictureUrl = `/uploads/${req.file.filename}`;
+        }
 
         // Crear una nueva instancia de usuario
         const newUser = new User({
@@ -34,33 +39,25 @@ exports.createUser = async (req, res) => {
             fullName,
             birthDate,
             gender,
-            profilePicture: profilePicturePath,
+            profilePicture: profilePictureUrl, // Guardar la URL de la imagen de perfil
             bio,
-            role
+            role,
+            email,
+            password: hashedPassword // Guardar la contraseña hasheada
         });
 
         // Guardar el nuevo usuario en la base de datos
         const user = await newUser.save();
 
-        // Crear una entrada de autenticación para el usuario
-        const newAuthentication = new Authentication({
-            user: user._id,
-            email,
-            password: hashedPassword // Guardar la contraseña hasheada
-        });
-
-        // Guardar la entrada de autenticación en la base de datos
-        await newAuthentication.save();
-
         // Enviar respuesta de éxito
-        res.status(201).json({ message: 'Usuario y autenticación creados exitosamente', user });
+        res.status(201).json({ message: 'Usuario creado exitosamente', user });
     } catch (err) {
-        console.error('Error creating user or authentication:', err);
-        res.status(500).json({ error: 'Error al crear el usuario o la autenticación: ' + err.message });
+        console.error('Error creating user:', err);
+        res.status(500).json({ error: 'Error al crear el usuario: ' + err.message });
     }
 };
 
-
+// Obtener Todos los Usuarios
 exports.getUsers = async (req, res) => {
     try {
         const users = await User.find();
@@ -71,7 +68,7 @@ exports.getUsers = async (req, res) => {
     }
 };
 
-
+// Obtener Usuario por ID
 exports.getUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -85,16 +82,16 @@ exports.getUserById = async (req, res) => {
     }
 };
 
-
-
+// Actualizar Usuario
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { username, phoneNumber, fullName, birthDate, gender, bio, role, email, password } = req.body;
+        let profilePictureUrl = null;
 
         // Validar datos del usuario
-        const validRoles = ['vendedor', 'cliente'];
-        if (role && !validRoles.includes(role.toLowerCase())) {
+        const validRoles = ['Vendedor', 'Cliente'];
+        if (role && !validRoles.includes(role)) {
             return res.status(400).json({ error: 'Rol no válido' });
         }
 
@@ -116,6 +113,11 @@ exports.updateUser = async (req, res) => {
             hashedPassword = await bcrypt.hash(password, 10);
         }
 
+        // Manejo de la imagen de perfil si existe
+        if (req.file) {
+            profilePictureUrl = `/uploads/${req.file.filename}`;
+        }
+
         // Actualizar el usuario
         const updateData = { 
             username, 
@@ -125,7 +127,8 @@ exports.updateUser = async (req, res) => {
             gender, 
             bio, 
             role, 
-            email 
+            email,
+            profilePicture: profilePictureUrl // Actualizar la imagen de perfil
         };
         if (hashedPassword) {
             updateData.password = hashedPassword; // Solo se actualiza la contraseña si se proporciona una nueva
@@ -134,19 +137,6 @@ exports.updateUser = async (req, res) => {
         const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true });
         if (!updatedUser) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
-        }
-
-        // Actualizar la entrada de autenticación si el email o la contraseña han cambiado
-        if (email || password) {
-            const updateAuthData = {};
-            if (email) {
-                updateAuthData.email = email;
-            }
-            if (hashedPassword) {
-                updateAuthData.password = hashedPassword;
-            }
-
-            await Authentication.findOneAndUpdate({ user: id }, updateAuthData);
         }
 
         res.status(200).json({ message: 'Usuario actualizado exitosamente', user: updatedUser });
@@ -160,7 +150,7 @@ exports.updateUser = async (req, res) => {
     }
 };
 
-
+// Eliminar Usuario
 exports.deleteUser = async (req, res) => {
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id);
@@ -173,4 +163,3 @@ exports.deleteUser = async (req, res) => {
         res.status(500).json({ error: 'No se pudo eliminar el usuario: Error interno del servidor', details: error.message });
     }
 };
-

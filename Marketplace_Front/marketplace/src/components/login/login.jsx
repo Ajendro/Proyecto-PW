@@ -1,14 +1,16 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate
 import './Login.css';
-import { FaPhone, FaUser, FaLock, FaEnvelope, FaBirthdayCake, FaTransgender } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaPhone, FaUser, FaLock, FaEnvelope, FaBirthdayCake, FaTransgender, FaImage } from "react-icons/fa";
 
 const Login = () => {
   const [action, setAction] = useState(''); // Controla la vista actual (login o registro)
+  const [profilePicture, setProfilePicture] = useState(null); // Estado para almacenar la imagen de perfil
+  const navigate = useNavigate(); 
 
   const registerLink = () => setAction('active');
   const loginLink = () => setAction('');
-
+  
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const formData = {
@@ -17,7 +19,7 @@ const Login = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:4000/apiauthentication/authentications/all', {
+      const response = await fetch('http://localhost:4000/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,14 +29,20 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
-        alert('Login successful!');
-        console.log(data);
-        // Manejar el token de autenticación si es necesario (almacenar en localStorage o contexto)
-        // Ejemplo:
-        // localStorage.setItem('authToken', data.token);
+        console.log('Login Response Data:', data); // Verifica el contenido de la respuesta
+
+        if (data.token) {
+          // Guardar el token en localStorage
+          localStorage.setItem('authToken', data.token);
+          console.log('Token saved in localStorage:', localStorage.getItem('authToken')); // Verifica el token guardado
+          alert('Login successful!');
+          navigate('/'); // Redirigir a la página principal
+        } else {
+          alert('Login failed: Token not received');
+        }
       } else {
         const errorData = await response.json();
-        alert(`Login failed: ${errorData.error || 'Unknown error'}`);
+        alert(`Login failed: ${errorData.message || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('Error logging in:', error);
@@ -44,39 +52,44 @@ const Login = () => {
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-
-    const userFormData = {
-      username: e.target.username.value,
-      email: e.target.email.value,
-      phoneNumber: e.target.phoneNumber.value,
-      fullName: e.target.fullName.value,
-      birthDate: e.target.birthDate.value,
-      gender: e.target.gender.value,
-      password: e.target.password.value,
-      role: e.target.role.value,
-    };
-
+  
+    const formData = new FormData();
+    formData.append('username', e.target.username.value);
+    formData.append('email', e.target.email.value);
+    formData.append('phoneNumber', e.target.phoneNumber.value);
+    formData.append('fullName', e.target.fullName.value);
+    formData.append('birthDate', e.target.birthDate.value);
+    formData.append('gender', e.target.gender.value);
+    formData.append('password', e.target.password.value);
+    formData.append('role', e.target.role.value);
+    if (profilePicture) {
+      formData.append('profilePicture', profilePicture); // Asegúrate de que este nombre coincida
+    }
+  
     try {
-      // Registrar el usuario
       const response = await fetch('http://localhost:4000/users/userscreate', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userFormData),
+        body: formData,
       });
-
-      if (response.ok) {
-        alert('Registration successful!');
-        setAction(''); // Regresar a la vista de login después del registro exitoso
-      } else {
-        const errorData = await response.json();
-        alert(`Registration failed: ${errorData.error || 'Unknown error'}`);
+  
+      if (!response.ok) {
+        const errorText = await response.text(); // Obtiene el texto de la respuesta para depuración
+        console.error('Error response text:', errorText);
+        alert(`Registration failed: ${errorText || 'Unknown error'}`);
+        return;
       }
+  
+      const data = await response.json();
+      alert('Registration successful!');
+      setAction(''); // Regresar a la vista de login después del registro exitoso
     } catch (error) {
       console.error('Error registering user:', error);
       alert('An error occurred!');
     }
+  };
+
+  const handleImageChange = (e) => {
+    setProfilePicture(e.target.files[0]);
   };
 
   return (
@@ -99,7 +112,7 @@ const Login = () => {
             </label>
             <a href="#">Forgot password?</a>
           </div>
-          <Link to="/" type="submit" className="button">Login</Link>
+          <button type="submit" className="button">Login</button>
           <div className="register-link">
             <p>Don't have an account? <a href="#" onClick={registerLink}>Register</a></p>
           </div>
@@ -138,19 +151,22 @@ const Login = () => {
             <FaTransgender className="icon" />
           </div>
           <div className="input-box">
-          <select name="role" required>
-            <option value="" disabled>Select Role</option>
-            <option value="Vendedor">Vendedor</option>
-            <option value="Cliente">Cliente</option>
-          </select>
-        </div>
+            <input type="file" name="profilePicture" accept="image/*" onChange={handleImageChange} />
+            <FaImage className="icon" />
+          </div>
+          <div className="input-box">
+            <select name="role" required>
+              <option value="Vendedor">Vendedor</option>
+              <option value="Cliente">Cliente</option>
+            </select>
+          </div>
           <div className="remember-forgot">
             <label>
               <input type="checkbox" />
               I agree to the terms & conditions
             </label>
           </div>
-          <button className="button"type="submit">Register</button>
+          <button type="submit" className="button">Register</button>
           <div className="register-link">
             <p>Already have an account? <a href="#" onClick={loginLink}>Login</a></p>
           </div>

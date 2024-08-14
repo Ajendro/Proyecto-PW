@@ -1,4 +1,4 @@
-
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -14,11 +14,12 @@ var usersRouter = require('./routes/users');
 var userRoute = require('./routes/userRoute');
 var categoryRoute = require('./routes/categoryRoute');
 var productRoute = require('./routes/productRoute');
-var orderRoute = require('./routes/orderRoute');
 var paymentMethodRoute = require('./routes/paymentMethodRoute');
 var shoppingCartRoute = require('./routes/shoppingCartRoute');
 var authenticationRoute = require('./routes/authenticationRoute');
 var formRoute = require('./routes/formRoute');
+const loginRoute = require('./routes/login');
+
 
 var app = express();
 
@@ -40,11 +41,11 @@ app.use('/users', userRoute);
 app.use('/apiuser', userRoute);
 app.use('/apicategory', categoryRoute);
 app.use('/apiproduct', productRoute);
-app.use('/apiorder', orderRoute);
 app.use('/apipaymethod', paymentMethodRoute);
 app.use('/apishoppingCart', shoppingCartRoute);
 app.use('/apiauthentication', authenticationRoute);
 app.use('/apiform', formRoute);
+app.use('/auth', loginRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -63,6 +64,18 @@ app.use(function(err, req, res, next) {
 });
 
 
+app.post('/apiproduct/products', async (req, res) => {
+  const { categoryId } = req.body;
+  
+  try {
+      const filter = categoryId ? { category: categoryId } : {};
+      const products = await Product.find(filter);
+      res.json(products);
+  } catch (error) {
+      console.error('Error fetching products:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 module.exports = app;

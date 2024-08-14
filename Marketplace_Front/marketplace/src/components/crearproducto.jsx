@@ -1,25 +1,48 @@
 import React, { useState, useEffect } from 'react';
 
+// Función para obtener el token del almacenamiento local
+const getToken = () => {
+  return localStorage.getItem('authToken');
+};
+
+// Función para obtener el ID del usuario a partir del token
+const getUserIdFromToken = () => {
+  const token = getToken();
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload._id;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
+  }
+  return null;
+};
+
 const CreateProduct = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
-  const [productImage, setProductImage] = useState(null);
+  const [productImage, setProductImage] = useState(null); // Estado para la imagen
   const [categories, setCategories] = useState([]);
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     // Fetch categories from the backend
     const fetchCategories = async () => {
       try {
         const response = await fetch('http://localhost:4000/apicategory/categories', {
-          method: 'POST', // Asegúrate de que el backend maneje POST para obtener categorías
+          method: 'POST', // Usamos GET para obtener las categorías
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`, // Si se requiere autenticación
+          },
         });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log('Fetched categories:', data); // Para depuración
         setCategories(data);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -29,35 +52,50 @@ const CreateProduct = () => {
     fetchCategories();
   }, []);
 
+  const handleImageChange = (e) => {
+    setProductImage(e.target.files[0]); // Guarda el archivo en el estado
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('description', description);
-    formData.append('price', price);
-    formData.append('category', category);
-    if (productImage) {
-      formData.append('Productimage', productImage); // Usa 'Productimage'
-    }
-  
-    try {
-      const response = await fetch('http://localhost:4000/apiproduct/productscreate', {
-        method: 'POST',
-        body: formData,
-      });
-      if (!response.ok) {
-        throw new Error('Error creating product.');
+    const userId = getUserIdFromToken(); // Obtén el ID del usuario del token
+
+    if (userId) {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description);
+      formData.append('price', price);
+      formData.append('category', category);
+      formData.append('userId', userId); // Agrega el ID del usuario al FormData
+      if (productImage) {
+        formData.append('productImage', productImage); // Agrega la imagen al FormData
       }
-      // Clear form fields
-      setName('');
-      setDescription('');
-      setPrice('');
-      setCategory('');
-      setProductImage(null);
-      alert('Product created successfully!');
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to create product.');
+
+      try {
+        const response = await fetch('http://localhost:4000/apiproduct/productscreate', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Authorization': `Bearer ${getToken()}`, // Incluye el token en los headers
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Error creating product.');
+        }
+
+        setName('');
+        setDescription('');
+        setPrice('');
+        setCategory('');
+        setProductImage(null); // Limpia el estado de la imagen
+        setAlert({ type: 'success', message: 'Product created successfully!' });
+      } catch (error) {
+        console.error('Error:', error);
+        setAlert({ type: 'error', message: 'Failed to create product.' });
+      }
+    } else {
+      setAlert({ type: 'error', message: 'Failed to get user ID.' });
     }
   };
 
@@ -77,6 +115,12 @@ const CreateProduct = () => {
             <h1 className="text-2xl font-semibold text-gray-800 dark:text-white lg:text-3xl lg:w-96">
               Create a New Product
             </h1>
+
+            {alert && (
+              <div className={`p-4 mb-4 text-white rounded-md ${alert.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+                {alert.message}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="mt-6">
               <div className="mb-4">
@@ -148,15 +192,17 @@ const CreateProduct = () => {
                   Product Image
                 </label>
                 <input
-                id="productImage"
-                type="file"
-                onChange={(e) => setProductImage(e.target.files[0])}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  id="productImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="mt-1 block w-full text-sm text-gray-500 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded-md file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
                 />
               </div>
+
               <button
                 type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md"
+                className="inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md shadow-sm text-white font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 Create Product
               </button>

@@ -2,38 +2,68 @@ import React, { useEffect, useState } from 'react';
 import { CiUser } from 'react-icons/ci';
 import { IoIosPhonePortrait } from 'react-icons/io';
 import { FaRegCalendarAlt, FaTransgender } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
-// Fetch user profile data from the API
-const fetchUserProfile = async () => {
+
+const getToken = () => {
+    const token = localStorage.getItem('authToken');
+    console.log('Token retrieved:', token);
+    return token;
+};
+
+
+const getUserIdFromToken = () => {
+    const token = getToken();
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1])); 
+            console.log('Decoded payload:', payload); 
+            return payload._id; 
+        } catch (error) {
+            console.error('Error decoding token:', error);
+        }
+    }
+    return null;
+};
+
+
+const fetchUserProfile = async (userId) => {
+    if (!userId) {
+        console.error('No user ID provided');
+        return null;
+    }
+
     try {
-        const response = await fetch('http://localhost:4000/users/user/66b924b604294dd1a847818f', {
+        const response = await fetch(`http://localhost:4000/users/user/${userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`,
             }
         });
 
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorMessage = await response.text();
+            console.error('Server response error:', errorMessage);
+            throw new Error(`Error en la solicitud: ${errorMessage}`);
         }
 
         const dataJson = await response.json();
         return dataJson;
     } catch (error) {
-        console.error('Error fetching user profile:', error);
+        console.error('Error al obtener el perfil del usuario:', error);
         return null;
     }
 };
 
-// Update user profile data
-const updateUserProfile = async (userData) => {
+const updateUserProfile = async (userId, formData) => {
     try {
-        const response = await fetch('http://localhost:4000/users/updateusers/66b924b604294dd1a847818f', {
+        const response = await fetch(`http://localhost:4000/users/updateusers/${userId}`, {
             method: 'PUT',
+            body: formData,
             headers: {
-                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`,
             },
-            body: JSON.stringify(userData),
         });
 
         if (!response.ok) {
@@ -48,13 +78,13 @@ const updateUserProfile = async (userData) => {
     }
 };
 
-// Delete user profile
-const deleteUserProfile = async () => {
+const deleteUserProfile = async (userId) => {
     try {
-        const response = await fetch('http://localhost:4000/users/deletedusers/66b924b604294dd1a847818f', {
+        const response = await fetch(`http://localhost:4000/users/deletedusers/${userId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`,
             }
         });
 
@@ -76,32 +106,45 @@ const UserProfile = () => {
     const [editing, setEditing] = useState(false);
     const [formData, setFormData] = useState({});
     const [alert, setAlert] = useState(null);
-    const [roles] = useState(['Vendedor', 'Cliente']); // Roles available
+    const [roles] = useState(['Vendedor', 'Cliente']);
+    const [selectedFile, setSelectedFile] = useState(null);
 
     useEffect(() => {
         const getUserProfile = async () => {
             setLoading(true);
-            const profileData = await fetchUserProfile();
-            if (profileData) {
-                setUser(profileData);
-                setFormData({
-                    username: profileData.username,
-                    phoneNumber: profileData.phoneNumber,
-                    fullName: profileData.fullName,
-                    birthDate: profileData.birthDate,
-                    gender: profileData.gender,
-                    email: profileData.email,
-                    password: '', // Empty initially for security
-                    role: profileData.role
-                });
+            const userId = getUserIdFromToken();
+            if (userId) {
+                const profileData = await fetchUserProfile(userId);
+                if (profileData) {
+                    setUser(profileData);
+                    setFormData({
+                        username: profileData.username,
+                        phoneNumber: profileData.phoneNumber,
+                        fullName: profileData.fullName,
+                        birthDate: profileData.birthDate,
+                        gender: profileData.gender,
+                        email: profileData.email,
+                        password: '',
+                        role: profileData.role,
+                        profilePicture: profileData.profilePicture,
+                        bio: profileData.bio
+                    });
+                } else {
+                    setError('Error al obtener el perfil de usuario');
+                }
             } else {
-                setError('Error al obtener el perfil de usuario');
+                setError('Error: Token inválido o usuario no encontrado');
             }
             setLoading(false);
         };
 
         getUserProfile();
     }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        window.location.href = '/login';
+    };
 
     const handleEditClick = () => {
         setEditing(true);
@@ -116,9 +159,12 @@ const UserProfile = () => {
             birthDate: user.birthDate,
             gender: user.gender,
             email: user.email,
-            password: '', // Empty initially for security
-            role: user.role
+            password: '',
+            role: user.role,
+            profilePicture: user.profilePicture,
+            bio: user.bio
         });
+        setSelectedFile(null);
     };
 
     const handleInputChange = (e) => {
@@ -126,25 +172,56 @@ const UserProfile = () => {
         setFormData(prevData => ({ ...prevData, [name]: value }));
     };
 
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const updatedUser = await updateUserProfile(formData);
-        if (updatedUser) {
-            setUser(updatedUser);
-            setEditing(false);
-            setAlert({ type: 'success', message: 'Perfil actualizado exitosamente' });
-        } else {
-            setError('Error al actualizar el perfil de usuario');
+        const userId = getUserIdFromToken();
+        if (userId) {
+            const formDataToSend = new FormData();
+            formDataToSend.append('username', formData.username);
+            formDataToSend.append('phoneNumber', formData.phoneNumber);
+            formDataToSend.append('fullName', formData.fullName);
+            formDataToSend.append('birthDate', formData.birthDate);
+            formDataToSend.append('gender', formData.gender);
+            formDataToSend.append('email', formData.email);
+            formDataToSend.append('password', formData.password);
+            formDataToSend.append('role', formData.role);
+            formDataToSend.append('bio', formData.bio);
+            if (selectedFile) {
+                formDataToSend.append('profilePicture', selectedFile);
+            }
+
+            try {
+                const updatedUser = await updateUserProfile(userId, formDataToSend);
+                if (updatedUser) {
+                    setUser(updatedUser);
+                    setAlert({ type: 'success', message: 'Perfil actualizado exitosamente' });
+                    setEditing(false);
+                } else {
+                    setAlert({ type: 'error', message: 'Error al actualizar el perfil' });
+                }
+            } catch (error) {
+                console.error('Error al actualizar el perfil:', error);
+                setAlert({ type: 'error', message: 'Error al actualizar el perfil' });
+            }
         }
     };
 
     const handleDelete = async () => {
-        const isDeleted = await deleteUserProfile();
-        if (isDeleted) {
-            setAlert({ type: 'success', message: 'Perfil eliminado exitosamente' });
-            setUser(null); // Clear the user data after deletion
+        const userId = getUserIdFromToken();
+        if (userId) {
+            const isDeleted = await deleteUserProfile(userId);
+            if (isDeleted) {
+                setAlert({ type: 'success', message: 'Perfil eliminado exitosamente' });
+                setUser(null); // Clear the user data after deletion
+            } else {
+                setAlert({ type: 'error', message: 'Error al eliminar el perfil de usuario' });
+            }
         } else {
-            setError('Error al eliminar el perfil de usuario');
+            setError('Error: Token inválido o usuario no encontrado');
         }
     };
 
@@ -164,7 +241,7 @@ const UserProfile = () => {
         <div className="w-full max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden dark:bg-gray-800">
             <img
                 className="object-cover object-center w-full h-56"
-                src={user.profilePicture || ''}
+                src={user.profilePicture || '/default-profile.png'}
                 alt={`${user.fullName}'s profile`}
             />
             <div className="px-6 py-4">
@@ -187,20 +264,9 @@ const UserProfile = () => {
                             />
                         </div>
                         <div className="mb-4">
-                            <label htmlFor="fullName" className="block text-gray-700 dark:text-gray-300">Nombre Completo</label>
-                            <input
-                                type="text"
-                                id="fullName"
-                                name="fullName"
-                                value={formData.fullName || ''}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            />
-                        </div>
-                        <div className="mb-4">
                             <label htmlFor="phoneNumber" className="block text-gray-700 dark:text-gray-300">Número de Teléfono</label>
                             <input
-                                type="text"
+                                type="tel"
                                 id="phoneNumber"
                                 name="phoneNumber"
                                 value={formData.phoneNumber || ''}
@@ -214,7 +280,7 @@ const UserProfile = () => {
                                 type="date"
                                 id="birthDate"
                                 name="birthDate"
-                                value={formData.birthDate ? new Date(formData.birthDate).toISOString().split('T')[0] : ''}
+                                value={formData.birthDate || ''}
                                 onChange={handleInputChange}
                                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             />
@@ -231,7 +297,7 @@ const UserProfile = () => {
                             />
                         </div>
                         <div className="mb-4">
-                            <label htmlFor="email" className="block text-gray-700 dark:text-gray-300">Correo Electrónico</label>
+                            <label htmlFor="email" className="block text-gray-700 dark:text-gray-300">Email</label>
                             <input
                                 type="email"
                                 id="email"
@@ -239,6 +305,7 @@ const UserProfile = () => {
                                 value={formData.email || ''}
                                 onChange={handleInputChange}
                                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                disabled
                             />
                         </div>
                         <div className="mb-4">
@@ -261,67 +328,106 @@ const UserProfile = () => {
                                 onChange={handleInputChange}
                                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             >
-                                <option value="" disabled>Select Role</option>
-                                <option value="Vendedor">Vendedor</option>
-                                <option value="Cliente">Cliente</option>
+                                {roles.map(role => (
+                                    <option key={role} value={role}>{role}</option>
+                                ))}
                             </select>
                         </div>
-                        <div className="flex justify-end">
+                        <div className="mb-4">
+                            <label htmlFor="profilePicture" className="block text-gray-700 dark:text-gray-300">Imagen de Perfil</label>
+                            <input
+                                type="file"
+                                id="profilePicture"
+                                name="profilePicture"
+                                onChange={handleFileChange}
+                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="bio" className="block text-gray-700 dark:text-gray-300">Biografía</label>
+                            <textarea
+                                id="bio"
+                                name="bio"
+                                value={formData.bio || ''}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            />
+                        </div>
+                        <div className="flex justify-between">
                             <button
                                 type="button"
                                 onClick={handleCancelClick}
-                                className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md mr-2"
+                                className="bg-gray-500 text-white px-4 py-2 rounded"
                             >
                                 Cancelar
                             </button>
                             <button
                                 type="submit"
-                                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                                className="bg-blue-500 text-white px-4 py-2 rounded"
                             >
-                                Guardar
+                                Guardar Cambios
                             </button>
                         </div>
                     </form>
                 ) : (
                     <div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{user.username}</h1>
-                        <p className="text-gray-600 dark:text-gray-300">{user.bio}</p>
-                        <div className="flex items-center my-2">
-                            <CiUser className="text-xl text-gray-500 dark:text-gray-300" />
-                            <span className="ml-2 text-gray-900 dark:text-gray-100">{user.username}</span>
+                        <div className="text-center py-4">
+                            <img
+                                className="w-24 h-24 rounded-full mx-auto"
+                                src={user.profilePicture || '/default-profile.png'}
+                                alt={`${user.fullName}'s profile`}
+                            />
+                            <h2 className="text-xl font-bold mt-2">{user.fullName}</h2>
+                            <p className="text-gray-500">{user.email}</p>
                         </div>
-                        <div className="flex items-center my-2">
-                            <IoIosPhonePortrait className="text-xl text-gray-500 dark:text-gray-300" />
-                            <span className="ml-2 text-gray-900 dark:text-gray-100">{user.phoneNumber}</span>
+                        <div className="px-6 py-4">
+                            <div className="mb-4">
+                                <CiUser className="inline-block mr-2" />
+                                <span className="font-semibold">Nombre de Usuario:</span> {user.username}
+                            </div>
+                            <div className="mb-4">
+                                <IoIosPhonePortrait className="inline-block mr-2" />
+                                <span className="font-semibold">Número de Teléfono:</span> {user.phoneNumber}
+                            </div>
+                            <div className="mb-4">
+                                <FaRegCalendarAlt className="inline-block mr-2" />
+                                <span className="font-semibold">Fecha de Nacimiento:</span> {user.birthDate}
+                            </div>
+                            <div className="mb-4">
+                                <FaTransgender className="inline-block mr-2" />
+                                <span className="font-semibold">Género:</span> {user.gender}
+                            </div>
+                            <div className="mb-4">
+                                <span className="font-semibold">Rol:</span> {user.role}
+                            </div>
+                            <div className="mb-4">
+                                <span className="font-semibold">Biografía:</span> {user.bio}
+                            </div>
                         </div>
-                        <div className="flex items-center my-2">
-                            <FaRegCalendarAlt className="text-xl text-gray-500 dark:text-gray-300" />
-                            <span className="ml-2 text-gray-900 dark:text-gray-100">{new Date(user.birthDate).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex items-center my-2">
-                            <FaTransgender className="text-xl text-gray-500 dark:text-gray-300" />
-                            <span className="ml-2 text-gray-900 dark:text-gray-100">{user.gender}</span>
-                        </div>
-                        <div className="flex items-center my-2">
-                            <span className="ml-2 text-gray-900 dark:text-gray-100">Correo: {user.email}</span>
-                        </div>
-                        <div className="flex items-center my-2">
-                            <span className="ml-2 text-gray-900 dark:text-gray-100">Rol: {user.role}</span>
-                        </div>
-                        <div className="flex justify-between mt-4">
+                        <div className="py-4 flex justify-between">
                             <button
                                 onClick={handleEditClick}
-                                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                                className="bg-blue-500 text-white px-4 py-2 rounded"
                             >
                                 Editar
                             </button>
                             <button
                                 onClick={handleDelete}
-                                className="bg-red-500 text-white px-4 py-2 rounded-md"
+                                className="bg-red-500 text-white px-4 py-2 rounded ml-5"
                             >
                                 Eliminar
                             </button>
+
+                        <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded ml-5">
+                            Cerrar Sesión
+                        </button>
+                        {user.role === 'Vendedor' && (
+                        <Link to="/crear-pro" className="bg-blue-500 text-white px-4 py-2 rounded ml-4">
+                            Crear Producto
+                        </Link>
+                    )}
                         </div>
+                        
                     </div>
                 )}
             </div>

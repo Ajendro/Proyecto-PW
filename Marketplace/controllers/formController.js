@@ -2,12 +2,12 @@ const Form = require('../models/formModel');
 
 exports.createForm = async (req, res) => {
     try {
-        const { name, email, mensaje } = req.body;
-        const newForm = new Form({ name, email, mensaje });
+        const { name, email,  message } = req.body;
+        const newForm = new Form({ name, email,  message });
         await newForm.save();
-        res.status(201).json({ mensaje: 'Formulario creado exitosamente', formulario: newForm });
+        res.status(201).json({  message: 'Formulario creado exitosamente', formulario: newForm });
     } catch (error) {
-        res.status(500).json({ mensaje: 'No se pudo crear el formulario: Error interno del servidor', error: error.message });
+        res.status(500).json({  message: 'No se pudo crear el formulario: Error interno del servidor', error: error.message });
     }
 };
 

@@ -2,11 +2,16 @@ const Product = require('../models/productModel');
 
 exports.createProduct = async (req, res) => {
     try {
-        const { name, description, price, category } = req.body;
+        const { name, description, price, category, userId } = req.body;
         let imageUrl = null;
 
         if (req.file) {
             imageUrl = `/uploads/${req.file.filename}`;
+        }
+
+        // Verifica si userId está definido y es un ObjectId válido
+        if (!userId) {
+            return res.status(400).json({ mensaje: 'ID de usuario no proporcionado' });
         }
 
         const newProduct = new Product({
@@ -14,7 +19,8 @@ exports.createProduct = async (req, res) => {
             description,
             price,
             category,
-            Productimage:imageUrl
+            productImage: imageUrl,
+            user: userId // Usa el ID del usuario proporcionado
         });
 
         await newProduct.save();
@@ -24,9 +30,12 @@ exports.createProduct = async (req, res) => {
     }
 };
 
+// Resto de los controladores no cambiaron
 exports.getProducts = async (req, res) => {
     try {
-        const products = await Product.find();
+        const { categoryId } = req.query;
+        const filter = categoryId ? { category: categoryId } : {};
+        const products = await Product.find(filter);
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ mensaje: 'Error al obtener productos', error: error.message });
@@ -69,4 +78,3 @@ exports.deleteProduct = async (req, res) => {
         res.status(500).json({ mensaje: 'No se pudo eliminar el producto: Error interno del servidor', error: error.message });
     }
 };
-
