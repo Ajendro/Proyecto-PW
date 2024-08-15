@@ -11,6 +11,7 @@ import Login from "./components/login/login";
 import Aboaut from "./components/about";
 import User from "./components/user";
 import CrearProduct from "./components/crearproducto";
+import ProductosUser from "./components/listadoproductos";
 import { useState } from "react";
 
 const Formpages = () => {
@@ -26,6 +27,7 @@ const Formpages = () => {
         <Route path="/about" element={<Aboaut />} />
         <Route path="/user" element={<User />} />
         <Route path="/crear-pro" element={<CrearProduct />} />
+        <Route path="/lista-pro" element={<ProductosUser />} />
         <Route 
           path="/carrito" 
           element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} 

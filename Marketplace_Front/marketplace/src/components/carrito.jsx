@@ -33,7 +33,7 @@ const Cart = ({ cartItems, setCartItems, userId }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user: userId, cartItems, total }), // Ensure userId is included
+        body: JSON.stringify({ user: userId, cartItems, total }),
       });
 
       if (!response.ok) {
@@ -55,6 +55,11 @@ const Cart = ({ cartItems, setCartItems, userId }) => {
         ) : (
           cartItems.map(item => (
             <li key={item.product._id} className="flex items-center justify-between mb-2 border-b pb-2">
+              <img 
+                src={item.product.productImage} // Asegúrate de que este sea el nombre correcto de la propiedad
+                alt={item.product.name} 
+                className="w-16 h-16 object-cover mr-4 rounded-md"
+              />
               <div className="flex-grow">
                 <span className="block text-sm">{item.product.name} - ${item.product.price.toFixed(2)}</span>
                 <div className="flex items-center mt-1">

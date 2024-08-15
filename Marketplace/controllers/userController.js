@@ -1,6 +1,19 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 const path = require('path');
+const cloudinary = require('../config/cloudinary')
+
+
+
+// Función para subir la imagen a Cloudinary
+const uploadImageToCloudinary = async (imagePath) => {
+    try {
+        const result = await cloudinary.uploader.upload(imagePath);
+        return result.secure_url;
+    } catch (error) {
+        throw new Error('Error al subir la imagen a Cloudinary: ' + error.message);
+    }
+};
 
 // Crear Usuario
 exports.createUser = async (req, res) => {
@@ -29,7 +42,7 @@ exports.createUser = async (req, res) => {
 
         // Manejo de la imagen de perfil si existe
         if (req.file) {
-            profilePictureUrl = `/uploads/${req.file.filename}`;
+            profilePictureUrl = await uploadImageToCloudinary(req.file.path);
         }
 
         // Crear una nueva instancia de usuario
@@ -115,7 +128,7 @@ exports.updateUser = async (req, res) => {
 
         // Manejo de la imagen de perfil si existe
         if (req.file) {
-            profilePictureUrl = `/uploads/${req.file.filename}`;
+            profilePictureUrl = await uploadImageToCloudinary(req.file.path);
         }
 
         // Actualizar el usuario
