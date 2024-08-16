@@ -29,8 +29,8 @@ const Navbar = () => {
               alt="Logo" 
             />
           </Link>
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            Pendiente
+          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white " style={{ fontFamily: 'cursive', fontWeight: 'bold'}} >
+          The Artful Shop
           </span>
         </div>
 

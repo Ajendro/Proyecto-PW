@@ -1,119 +1,54 @@
 const Footer = () => {
   return (
     <footer className="bg-black dark:bg-gray-900">
-      <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
-        <div className="md:flex md:justify-between">
-          <div className="mb-6 md:mb-0">
-          </div>
-          <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
-            <div>
-              <h2 className="mb-6 text-sm font-semibold text-white uppercase dark:text-white">
-                Resources
-              </h2>
-              <ul className="text-white dark:text-gray-400 font-medium">
-                <li className="mb-4">
-                  <a href="https://flowbite.com/" className="hover:underline">
-                    Flowbite
-                  </a>
-                </li>
-                <li>
-                  <a href="https://tailwindcss.com/" className="hover:underline text-white">
-                    Tailwind CSS
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h2 className="mb-6 text-sm font-semibold text-white uppercase dark:text-white">
-                Follow us
-              </h2>
-              <ul className="text-white dark:text-gray-400 font-medium">
-                <li className="mb-4">
-                  <a href="https://github.com/themesberg/flowbite" className="hover:underline">
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a href="https://discord.gg/4eeurUVvTy" className="hover:underline">
-                    Discord
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h2 className="mb-6 text-sm font-semibold text-white uppercase dark:text-white">
-                Legal
-              </h2>
-              <ul className="text-white text-white font-medium">
-                <li className="mb-4">
-                  <a href="#" className="hover:underline">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:underline">
-                    Terms &amp; Conditions
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <hr className="my-6 border-gray-200 sm:mx-auto text-white lg:my-8" />
-        <div className="sm:flex sm:items-center sm:justify-between">
-          <span className="text-sm text-white sm:text-center dark:text-gray-400">
-            © 2024{' '}
-            <a href="https://flowbite.com/" className="hover:underline">
-              Flowbite™
-            </a>
-            . All Rights Reserved.
-          </span>
-          <div className="flex mt-4 sm:justify-center sm:mt-0">
-            <a href="#" className="text-white hover:text-gray-900 dark:hover:text-white">
-              <svg
-                className="w-4 h-4"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 8 19"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M6.135 3H8V0H6.135a4.147 4.147 0 0 0-4.142 4.142V6H0v3h2v9.938h3V9h2.021l.592-3H5V3.591A.6.6 0 0 1 5.592 3h.543Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span className="sr-only">Facebook page</span>
-            </a>
-            <a href="#" className="text-white hover:text-gray-900 dark:hover:text-white ms-5">
-              <svg
-                className="w-4 h-4"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 21 16"
-              >
-                <path d="M16.942 1.556a16.3 16.3 0 0 0-4.126-1.3 12.04 12.04 0 0 0-.529 1.1 15.175 15.175 0 0 0-4.573 0 11.585 11.585 0 0 0-.535-1.1 16.274 16.274 0 0 0-4.129 1.3A17.392 17.392 0 0 0 .182 13.218a15.785 15.785 0 0 0 4.963 2.521c.41-.564.773-1.16 1.084-1.785a10.63 10.63 0 0 1-1.706-.83c.143-.106.283-.217.418-.33a11.664 11.664 0 0 0 10.118 0c.137.113.277.224.418.33-.544.328-1.116.606-1.71.832a12.52 12.52 0 0 0 1.084 1.785 16.46 16.46 0 0 0 5.064-2.595 17.286 17.286 0 0 0-2.973-11.59ZM6.678 10.813a1.941 1.941 0 0 1-1.8-2.045 1.93 1.93 0 0 1 1.8-2.047 1.919 1.919 0 0 1 1.8 2.047 1.93 1.93 0 0 1-1.8 2.045Zm6.644 0a1.94 1.94 0 0 1-1.8-2.045 1.93 1.93 0 0 1 1.8-2.047 1.918 1.918 0 0 1 1.8 2.047 1.93 1.93 0 0 1-1.8 2.045Z" />
-              </svg>
-              <span className="sr-only">Discord community</span>
-            </a>
-            <a href="#" className="text-white hover:text-gray-900 dark:hover:text-white ms-5">
-              <svg
-                className="w-4 h-4"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 17"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M20 1.892a8.178 8.178 0 0 1-2.355.635 4.074 4.074 0 0 0 1.8-2.235 8.344 8.344 0 0 1-2.605.98A4.13 4.13 0 0 0 13.85 0a4.068 4.068 0 0 0-4.1 4.038 4 4 0 0 0 .105.919A11.705 11.705 0 0 1 1.4.734a4.006 4.006 0 0 0 1.268 5.392 4.165 4.165 0 0 1-1.859-.5v.05A4.057 4.057 0 0 0 4.1 9.635a4.19 4.19 0 0 1-1.856.07 4.108 4.108 0 0 0 3.831 2.807A8.36 8.36 0 0 1 0 14.184 11.732 11.732 0 0 0 6.291 16 11.502 11.502 0 0 0 17.964 4.5c0-.177-.004-.354-.012-.53A8.078 8.078 0 0 0 20 1.892ZM6.405 7.917a1.75 1.75 0 0 1-.445-.065 1.78 1.78 0 0 1-1.409-1.883V5.964a1.787 1.787 0 0 1 1.782-1.796 1.811 1.811 0 0 1 1.782 1.796v.006a1.772 1.772 0 0 1-.178.786 1.832 1.832 0 0 1-1.671.832Zm7.283 1.888a1.766 1.766 0 0 1-1.542.803 1.779 1.779 0 0 1-1.782-1.796v-.006a1.794 1.794 0 0 1 .44-1.166 1.776 1.776 0 0 1 1.654-.746c.72 0 1.388.421 1.686 1.064a1.785 1.785 0 0 1 .236.877v.055a1.792 1.792 0 0 1-1.77 1.794Zm-3.286-4.524v-.006a1.75 1.75 0 0 1-1.779-1.768 1.777 1.777 0 0 1 1.779-1.779 1.75 1.75 0 0 1 1.775 1.779v.006a1.752 1.752 0 0 1-1.776 1.768Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span className="sr-only">GitHub account</span>
-            </a>
-          </div>
+      <div className="container flex flex-col items-center justify-between p-12 mx-auto space-y-4 sm:space-y-0 sm:flex-row">
+        {/* Logo section */}
+        <a href="#">
+          <img
+            className="w-auto h-10"
+            src="https://www.uide.edu.ec/wp-content/uploads/2022/06/UIDE-R-web.png" // Cambia la URL al logo de UIDE
+            alt="UIDE Logo"
+          />
+        </a>
+
+        {/* Copyright notice */}
+        <p className="text-lg text-gray-400 dark:text-gray-300">
+          © Copyright 2024. All Rights Reserved.
+        </p>
+
+        {/* Social media links */}
+        <div className="flex -mx-3">
+          {/* Reddit link */}
+          <a
+            href="#"
+            className="mx-3 text-gray-400 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+            aria-label="Reddit"
+          >
+            <svg
+              className="w-6 h-6 fill-current"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C21.9939 17.5203 17.5203 21.9939 12 22ZM6.807 10.543C6.20862 10.5433 5.67102 10.9088 5.45054 11.465C5.23006 12.0213 5.37133 12.6558 5.807 13.066C5.92217 13.1751 6.05463 13.2643 6.199 13.33C6.18644 13.4761 6.18644 13.6229 6.199 13.769C6.199 16.009 8.814 17.831 12.028 17.831C15.242 17.831 17.858 16.009 17.858 13.769C17.8696 13.6229 17.8696 13.4761 17.858 13.33C18.4649 13.0351 18.786 12.3585 18.6305 11.7019C18.475 11.0453 17.8847 10.5844 17.21 10.593H17.157C16.7988 10.6062 16.458 10.7512 16.2 11C15.0625 10.2265 13.7252 9.79927 12.35 9.77L13 6.65L15.138 7.1C15.1931 7.60706 15.621 7.99141 16.131 7.992C16.1674 7.99196 16.2038 7.98995 16.24 7.986C16.7702 7.93278 17.1655 7.47314 17.1389 6.94094C17.1122 6.40873 16.6729 5.991 16.14 5.991C16.1022 5.99191 16.0645 5.99491 16.027 6C15.71 6.03367 15.4281 6.21641 15.268 6.492L12.82 6C12.7983 5.99535 12.7762 5.993 12.754 5.993C12.6094 5.99472 12.4851 6.09583 12.454 6.237L11.706 9.71C10.3138 9.7297 8.95795 10.157 7.806 10.939C7.53601 10.6839 7.17843 10.5422 6.807 10.543ZM12.18 16.524C12.124 16.524 12.067 16.524 12.011 16.524C11.955 16.524 11.898 16.524 11.842 16.524C11.0121 16.5208 10.2054 16.2497 9.542 15.751C9.49626 15.6958 9.47445 15.6246 9.4814 15.5533C9.48834 15.482 9.52348 15.4163 9.579 15.371C9.62737 15.3318 9.68771 15.3102 9.75 15.31C9.81233 15.31 9.87275 15.3315 9.921 15.371C10.4816 15.7818 11.159 16.0022 11.854 16C11.9027 16 11.9513 16 12 16C12.059 16 12.119 16 12.178 16C12.864 16.0011 13.5329 15.7863 14.09 15.386C14.1427 15.3322 14.2147 15.302 14.29 15.302C14.3653 15.302 14.4373 15.3322 14.49 15.386C14.5985 15.4981 14.5962 15.6767 14.485 15.786V15.746C13.8213 16.2481 13.0123 16.5208 12.18 16.523V16.524ZM14.307 14.08H14.291L14.299 14.041C13.8591 14.011 13.4994 13.6789 13.4343 13.2429C13.3691 12.8068 13.6162 12.3842 14.028 12.2269C14.4399 12.0697 14.9058 12.2202 15.1478 12.5887C15.3899 12.9572 15.3429 13.4445 15.035 13.76C14.856 13.9554 14.6059 14.0707 14.341 14.08H14.306H14.307ZM9.67 14C9.11772 14 8.67 13.5523 8.67 13C8.67 12.4477 9.11772 12 9.67 12C10.2223 12 10.67 12.4477 10.67 13C10.67 13.5523 10.2223 14 9.67 14Z" />
+            </svg>
+          </a>
+
+          {/* Facebook link */}
+          <a
+            href="#"
+            className="mx-3 text-gray-400 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+            aria-label="Facebook"
+          >
+            <svg
+              className="w-6 h-6 fill-current"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M2.00195 12.002C2.00312 16.9214 5.58036 21.1101 10.439 21.881V14.892H7.90195V12.002H10.442V9.80204C10.3284 8.75958 10.6845 7.72064 11.4136 6.96698C12.1427 6.21332 13.1693 5.82306 14.215 5.90204C14.9655 5.91417 15.7141 5.98101 16.455 6.10205V8.56104H15.191C14.7558 8.50405 14.3183 8.64777 14.0017 8.95171C13.6851 9.25566 13.5237 9.68693 13.548 10.137V12.002H16.442L15.425 14.892H13.548V21.881C17.955 21.1034 21.998 16.6886 22 12.002C22 7.38779 18.1848 3.16095 13.7228 2.22302C8.4392 1.3277 3.52928 4.73084 2.00195 8.42503V12.002Z" />
+            </svg>
+          </a>
         </div>
       </div>
     </footer>
@@ -121,3 +56,5 @@ const Footer = () => {
 };
 
 export default Footer;
+
+
