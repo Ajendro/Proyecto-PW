@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // Asegúrate de importar Link de react-router-dom
 
 // Función para obtener el token del almacenamiento local
 const getToken = () => {
@@ -33,7 +34,7 @@ const CreateProduct = () => {
     const fetchCategories = async () => {
       try {
         const response = await fetch('http://localhost:4000/apicategory/categories', {
-          method: 'POST', // Usamos GET para obtener las categorías
+          method: 'POST', // Cambia a GET para obtener las categorías
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${getToken()}`, // Si se requiere autenticación
@@ -189,7 +190,7 @@ const CreateProduct = () => {
 
               <div className="mb-4">
                 <label htmlFor="productImage" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Product Image
+                  Imagen del  Producto
                 </label>
                 <input
                   id="productImage"
@@ -200,12 +201,18 @@ const CreateProduct = () => {
                 />
               </div>
 
-              <button
-                type="submit"
-                className="inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md shadow-sm text-white font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                Create Product
-              </button>
+              <div className="flex space-x-4">
+                <button
+                  type="submit"
+                  className="inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md shadow-sm text-white font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Crear Productos
+                </button>
+
+                <Link to="/lista-pro" className="inline-flex items-center px-4 py-2 bg-gray-500 border border-transparent rounded-md shadow-sm text-white font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                  Ver Productos
+                </Link>
+              </div>
             </form>
           </div>
         </div>
@@ -215,3 +222,4 @@ const CreateProduct = () => {
 };
 
 export default CreateProduct;
+

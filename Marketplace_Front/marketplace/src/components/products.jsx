@@ -1,4 +1,3 @@
-// ProductList.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
@@ -79,8 +78,8 @@ const ProductList = ({ cartItems, setCartItems }) => {
     };
 
     return (
-        <div className="relative " >
-            <main className="flex-1 mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8 ">
+        <div className="relative">
+            <main className="flex-1 mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                 <h2 className="text-2xl mb-10 font-bold tracking-tight text-gray-900">
                     Productos: {categories[selectedCategory] || 'Todos los productos'}
                 </h2>
@@ -103,11 +102,11 @@ const ProductList = ({ cartItems, setCartItems }) => {
                 <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
                     {products.map((product) => (
                         <div key={product._id} className="group">
-                            <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                            <div className="relative w-full h-64 overflow-hidden rounded-lg bg-gray-200">
                                 <img
                                     alt={product.name}
                                     src={product.productImage}
-                                    className="h-full w-full object-cover object-center group-hover:opacity-75"
+                                    className="object-cover object-center w-full h-full"
                                 />
                             </div>
                             <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>

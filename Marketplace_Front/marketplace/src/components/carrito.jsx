@@ -40,6 +40,9 @@ const Cart = ({ cartItems, setCartItems, userId }) => {
         throw new Error('Error en la solicitud de pago.');
       }
 
+      // Guardar los productos en el almacenamiento local para acceder en el formulario de pago
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
       navigate('/pago');
     } catch (error) {
       console.error('Error al enviar el carrito:', error);
@@ -56,7 +59,7 @@ const Cart = ({ cartItems, setCartItems, userId }) => {
           cartItems.map(item => (
             <li key={item.product._id} className="flex items-center justify-between mb-2 border-b pb-2">
               <img 
-                src={item.product.productImage} // Asegúrate de que este sea el nombre correcto de la propiedad
+                src={item.product.productImage}
                 alt={item.product.name} 
                 className="w-16 h-16 object-cover mr-4 rounded-md"
               />

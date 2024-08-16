@@ -1,69 +1,54 @@
 // paymentMethodController.js
 const PaymentMethod = require('../models/paymentMethodModel');
 const AuthUser = require('../models/authenticationModel'); // Modelo para la tabla de autenticación
+const User = require('../models/authenticationModel'); 
+
 
 exports.createPaymentMethod = async (req, res) => {
     try {
-        // Supongamos que el email viene en el cuerpo de la solicitud o está disponible en la sesión
-        const userEmail = req.body.email || req.session.email;
-        
-        if (!userEmail) {
-            return res.status(400).json({ error: 'Correo electrónico del usuario no proporcionado' });
+        const { _id, email, cardNumber, expiry, cvc, name, address, zip, ownerName, productIds } = req.body;
+
+        if (!_id) {
+            return res.status(400).json({ error: 'ID del usuario no proporcionado' });
         }
 
-        const { cardNumber, expiry, cvc, name, address, zip, ownerName } = req.body;
-
-        // Verifica si todos los campos requeridos están presentes
-        const requiredFields = ['cardNumber', 'expiry', 'cvc', 'name', 'address', 'zip', 'ownerName'];
-        const missingFields = requiredFields.filter(field => !req.body[field]);
-
-        if (missingFields.length > 0) {
-            return res.status(400).json({ error: `Faltan campos requeridos: ${missingFields.join(', ')}` });
-        }
-
-        // Verifica que userEmail no sea undefined antes de llamar a toLowerCase()
-        if (typeof userEmail !== 'string') {
-            return res.status(400).json({ error: 'Correo electrónico inválido o no proporcionado' });
-        }
-
-        // Busca el usuario en la tabla de autenticación utilizando el email
-        const authUser = await AuthUser.findOne({ email: userEmail.toLowerCase() });
-
-        if (!authUser) {
-            return res.status(404).json({ message: 'Usuario no encontrado en la tabla de autenticación' });
-        }
-
-        // Crea un nuevo método de pago
+        // Aquí puedes guardar el método de pago y los productos asociados en la base de datos
         const newPaymentMethod = new PaymentMethod({
-            user: authUser._id,
+            user: _id,
+            email,
             cardNumber,
             expiry,
             cvc,
             name,
             address,
             zip,
-            ownerName
+            ownerName,
+            products: productIds // Guardar los IDs de los productos asociados
         });
 
         await newPaymentMethod.save();
-        res.status(201).json({ message: 'Método de pago creado exitosamente', paymentMethod: newPaymentMethod });
+        res.status(201).json({ message: 'Método de pago registrado con éxito' });
     } catch (error) {
-        if (error.name === 'ValidationError') {
-            res.status(400).json({ error: 'No se pudo crear el método de pago: Validación fallida', details: error.message });
-        } else {
-            res.status(500).json({ error: 'No se pudo crear el método de pago: Error interno del servidor', details: error.message });
-        }
+        console.error('Error creating payment method:', error);
+        res.status(500).json({ error: 'Error al registrar el método de pago', details: error.message });
     }
 };
 
 
-// Obtener todos los métodos de pago
+
 exports.getPaymentMethods = async (req, res) => {
     try {
-        const paymentMethods = await PaymentMethod.find();
-        res.status(200).json(paymentMethods);
+        const { _id } = req.body; // Obtener el _id del cuerpo de la solicitud
+
+        if (!_id) {
+            return res.status(400).json({ error: 'ID del usuario no proporcionado' });
+        }
+
+        // Obtener los métodos de pago del usuario usando _id
+        const paymentMethods = await PaymentMethod.find({ user: _id }).exec();
+        res.status(200).json({ paymentMethods });
     } catch (error) {
-        console.error('Error getting payment methods:', error);
+        console.error('Error fetching payment methods:', error);
         res.status(500).json({ error: 'Error al obtener métodos de pago', details: error.message });
     }
 };
@@ -132,5 +117,30 @@ exports.deletePaymentMethod = async (req, res) => {
     } catch (error) {
         console.error('Error deleting payment method:', error);
         res.status(500).json({ error: 'No se pudo eliminar el método de pago: Error interno del servidor', details: error.message });
+    }
+};
+
+
+exports.getProductsAndPaymentMethods = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        // Obtener métodos de pago
+        const paymentMethods = await PaymentMethod.find({ user: userId }).exec();
+        if (!paymentMethods.length) {
+            return res.status(404).json({ error: 'Métodos de pago no encontrados para el usuario' });
+        }
+
+        // Obtener productos comprados
+        const products = await Product.find({ userId: userId }).exec();
+        if (!products.length) {
+            return res.status(404).json({ error: 'Productos no encontrados para el usuario' });
+        }
+
+        // Responder con productos y métodos de pago
+        res.status(200).json({ paymentMethods, products });
+    } catch (error) {
+        console.error('Error fetching payment methods and products:', error);
+        res.status(500).json({ error: 'No se pudo obtener los métodos de pago y productos: Error interno del servidor', details: error.message });
     }
 };
