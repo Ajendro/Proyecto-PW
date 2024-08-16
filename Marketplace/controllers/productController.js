@@ -1,12 +1,24 @@
 const Product = require('../models/productModel');
+const cloudinary = require('../config/cloudinary');
 
+// Función para subir la imagen a Cloudinary
+const uploadImageToCloudinary = async (imagePath) => {
+    try {
+        const result = await cloudinary.uploader.upload(imagePath);
+        return result.secure_url;
+    } catch (error) {
+        throw new Error('Error al subir la imagen a Cloudinary: ' + error.message);
+    }
+};
+
+// Crear Producto
 exports.createProduct = async (req, res) => {
     try {
         const { name, description, price, category, userId } = req.body;
         let imageUrl = null;
 
         if (req.file) {
-            imageUrl = `/uploads/${req.file.filename}`;
+            imageUrl = await uploadImageToCloudinary(req.file.path);
         }
 
         // Verifica si userId está definido y es un ObjectId válido
@@ -20,7 +32,7 @@ exports.createProduct = async (req, res) => {
             price,
             category,
             productImage: imageUrl,
-            user: userId // Usa el ID del usuario proporcionado
+            user: userId 
         });
 
         await newProduct.save();
@@ -30,7 +42,7 @@ exports.createProduct = async (req, res) => {
     }
 };
 
-// Resto de los controladores no cambiaron
+// Obtener Todos los Productos
 exports.getProducts = async (req, res) => {
     try {
         const { categoryId } = req.query;
@@ -42,6 +54,7 @@ exports.getProducts = async (req, res) => {
     }
 };
 
+// Obtener Producto por ID
 exports.getProductById = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
@@ -54,10 +67,18 @@ exports.getProductById = async (req, res) => {
     }
 };
 
+// Actualizar Producto
 exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { new: true });
+        let updateData = req.body;
+
+        if (req.file) {
+            const imageUrl = await uploadImageToCloudinary(req.file.path);
+            updateData = { ...updateData, productImage: imageUrl };
+        }
+
+        const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true });
         if (!updatedProduct) {
             return res.status(404).json({ mensaje: 'Producto no encontrado' });
         }
@@ -67,6 +88,7 @@ exports.updateProduct = async (req, res) => {
     }
 };
 
+// Eliminar Producto
 exports.deleteProduct = async (req, res) => {
     try {
         const deletedProduct = await Product.findByIdAndDelete(req.params.id);
@@ -76,5 +98,16 @@ exports.deleteProduct = async (req, res) => {
         res.status(200).json({ mensaje: 'Producto eliminado exitosamente' });
     } catch (error) {
         res.status(500).json({ mensaje: 'No se pudo eliminar el producto: Error interno del servidor', error: error.message });
+    }
+};
+
+// Obtener Productos por User ID
+exports.getProductsByUserId = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const products = await Product.find({ user: userId });
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };

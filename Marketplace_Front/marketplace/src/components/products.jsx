@@ -8,6 +8,10 @@ const ProductList = ({ cartItems, setCartItems }) => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const { categoryId } = useParams(); // Obtén el categoryId de la URL
 
+    useEffect(() => {
+        console.log(products); // Esto imprimirá el array de productos en la consola
+    }, [products]);
+
     const fetchProducts = async (categoryId) => {
         try {
             const response = await fetch('http://localhost:4000/apiproduct/products' + (categoryId ? `?categoryId=${categoryId}` : ''), {
@@ -102,7 +106,7 @@ const ProductList = ({ cartItems, setCartItems }) => {
                             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                                 <img
                                     alt={product.name}
-                                    src={product.Productimage}
+                                    src={product.productImage}
                                     className="h-full w-full object-cover object-center group-hover:opacity-75"
                                 />
                             </div>
