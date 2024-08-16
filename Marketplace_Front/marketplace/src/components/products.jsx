@@ -80,9 +80,9 @@ const ProductList = ({ cartItems, setCartItems }) => {
 
     return (
         <div className="relative " >
-            <main className="flex-1 mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8 mt-[-150px]">
+            <main className="flex-1 mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8 ">
                 <h2 className="text-2xl mb-10 font-bold tracking-tight text-gray-900">
-                    Productos en la categoría: {categories[selectedCategory] || 'Todos los productos'}
+                    Productos: {categories[selectedCategory] || 'Todos los productos'}
                 </h2>
 
                 <div className="mb-4">
