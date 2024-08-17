@@ -1,35 +1,33 @@
 const nodemailer = require('nodemailer');
 
-// Configura el transportador de correo con Mailtrap
-const transporter = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
+const transportLisa = {
+    tls: { rejectUnauthorized: false },
+    host: "smtp.gmail.com",
+    secure: true,
     auth: {
-        user: "ea0eb92cc1978c",
-        pass: "d188281e902715"
+        user: "fintechnc@gmail.com",
+        pass: "bplwnzddzukclgpm"
     }
-});
+};
 
-// Función para enviar el correo de confirmación del método de pago
-const sendPaymentConfirmationEmail = async (email, cardNumber, paymentMethodType) => {
-    const mailOptions = {
-        from: "merchanjair1@gmail.com", // Dirección del remitente
+async function sendPaymentConfirmationEmail(email, cardNumber, paymentMethodType) {
+    const transporter = nodemailer.createTransport(transportLisa);
+
+    const message = {
+        from: `LISA <${transportLisa.auth.user}>`, // sender address
         to: email,
-        subject: 'Confirmación de Compra',
-        text: `Hola,\n\nTu nueva compra se realizó con éxito.\n\nDetalles:\nNúmero de tarjeta: ${cardNumber}\nTipo de pago: ${paymentMethodType}\n\nGracias por usar nuestro servicio.`
+        subject: 'Payment Method Confirmation',
+        text: `Your payment method has been successfully added.\nCard Number: ${cardNumber}\nPayment Method Type: ${paymentMethodType}`,
     };
 
     try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Correo enviado:', info.response);
+        const info = await transporter.sendMail(message);
+        console.log('Información de envío de correo:', info);
         return info;
     } catch (error) {
         console.error('Error al enviar el correo:', error);
-        throw error;
+        throw new Error('Error al enviar el correo');
     }
-};
+}
 
-module.exports = {
-    sendPaymentConfirmationEmail
-};
-
+module.exports = sendPaymentConfirmationEmail;

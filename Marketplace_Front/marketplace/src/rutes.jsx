@@ -20,11 +20,12 @@ const Formpages = () => {
 
   return (
     <div>
-      <Header />
+      {/* Pasa cartItems y setCartItems al Header */}
+      <Header cartItems={cartItems} setCartItems={setCartItems} />
 
       <Routes>
         <Route path="/form" element={<Form />} />
-        <Route path="/products" element={<ProductList />} />
+        <Route path="/products" element={<ProductList cartItems={cartItems} setCartItems={setCartItems} />} />
         <Route path="/about" element={<Aboaut />} />
         <Route path="/user" element={<User />} />
         <Route path="/crear-pro" element={<CrearProduct />} />
@@ -52,8 +53,7 @@ const Formpages = () => {
           element={
             <div>
               <Example />
-              <div style={{ marginTop: "150px", marginLeft: "150px" }}>
-              </div>
+              <div style={{ marginTop: "150px", marginLeft: "150px" }}></div>
               <ProductList cartItems={cartItems} setCartItems={setCartItems} />
             </div>
           }

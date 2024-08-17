@@ -1,6 +1,6 @@
 // paymentMethodController.js
 const PaymentMethod = require('../models/paymentMethodModel');
-const { sendPaymentConfirmationEmail } = require('../utils/sendEmail'); // Asegúrate de la ruta correcta
+const { sendPaymentConfirmationEmail } = require('../utils/sendEmail');
 
 exports.createPaymentMethod = async (req, res) => {
     try {
@@ -11,7 +11,6 @@ exports.createPaymentMethod = async (req, res) => {
             return res.status(400).json({ error: 'ID del usuario o correo electrónico no proporcionado' });
         }
 
-        // Crear y guardar el nuevo método de pago
         const newPaymentMethod = new PaymentMethod({
             user: userId,
             email,
@@ -27,10 +26,8 @@ exports.createPaymentMethod = async (req, res) => {
 
         await newPaymentMethod.save();
 
-        // Llamar a la función para enviar el correo electrónico
         await sendPaymentConfirmationEmail(email, cardNumber, paymentMethodType);
 
-        // Responder con éxito
         res.status(201).json({ message: 'Método de pago registrado con éxito' });
     } catch (error) {
         console.error('Error al crear el método de pago:', error);
