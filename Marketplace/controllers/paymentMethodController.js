@@ -1,20 +1,19 @@
 // paymentMethodController.js
 const PaymentMethod = require('../models/paymentMethodModel');
-const AuthUser = require('../models/authenticationModel'); // Modelo para la tabla de autenticación
-const User = require('../models/authenticationModel'); 
-
+const { sendPaymentConfirmationEmail } = require('../utils/sendEmail'); // Asegúrate de la ruta correcta
 
 exports.createPaymentMethod = async (req, res) => {
     try {
-        const { _id, email, cardNumber, expiry, cvc, name, address, zip, ownerName, productIds } = req.body;
+        const { userId, email, cardNumber, expiry, cvc, name, address, zip, ownerName, paymentMethodType } = req.body;
+        console.log('Datos recibidos:', { userId, email, cardNumber, expiry, cvc, name, address, zip, ownerName, paymentMethodType });
 
-        if (!_id) {
-            return res.status(400).json({ error: 'ID del usuario no proporcionado' });
+        if (!userId || !email) {
+            return res.status(400).json({ error: 'ID del usuario o correo electrónico no proporcionado' });
         }
 
-        // Aquí puedes guardar el método de pago y los productos asociados en la base de datos
+        // Crear y guardar el nuevo método de pago
         const newPaymentMethod = new PaymentMethod({
-            user: _id,
+            user: userId,
             email,
             cardNumber,
             expiry,
@@ -23,18 +22,21 @@ exports.createPaymentMethod = async (req, res) => {
             address,
             zip,
             ownerName,
-            products: productIds // Guardar los IDs de los productos asociados
+            paymentMethodType,
         });
 
         await newPaymentMethod.save();
+
+        // Llamar a la función para enviar el correo electrónico
+        await sendPaymentConfirmationEmail(email, cardNumber, paymentMethodType);
+
+        // Responder con éxito
         res.status(201).json({ message: 'Método de pago registrado con éxito' });
     } catch (error) {
-        console.error('Error creating payment method:', error);
+        console.error('Error al crear el método de pago:', error);
         res.status(500).json({ error: 'Error al registrar el método de pago', details: error.message });
     }
 };
-
-
 
 exports.getPaymentMethods = async (req, res) => {
     try {
@@ -71,7 +73,7 @@ exports.getPaymentMethodById = async (req, res) => {
 exports.updatePaymentMethod = async (req, res) => {
     try {
         const { id } = req.params;
-        const { cardNumber, expiry, cvc, name, address, zip, ownerName } = req.body;
+        const { cardNumber, expiry, cvc, name, address, zip, ownerName, paymentMethodType  } = req.body;
 
         // Verificar los campos requeridos
         const requiredFields = ['cardNumber', 'expiry', 'cvc', 'name', 'address', 'zip', 'ownerName'];
@@ -89,7 +91,7 @@ exports.updatePaymentMethod = async (req, res) => {
             name,
             address,
             zip,
-            ownerName
+            ownerNamem
         }, { new: true });
 
         if (!updatedPaymentMethod) {

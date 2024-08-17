@@ -1,13 +1,35 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Cart = ({ cartItems, setCartItems, userId }) => {
+const Cart = ({ cartItems, setCartItems }) => {
   const navigate = useNavigate();
 
+  // Función para obtener el ID del usuario desde el token
+  const getUserIdFromToken = () => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload._id) {
+          return payload._id;
+        } else {
+          console.error('ID de usuario no encontrado en el token.');
+          return null;
+        }
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return null;
+      }
+    }
+    return null;
+  };
+
+  // Función para manejar la eliminación de un producto del carrito
   const handleRemove = (productId) => {
     setCartItems(cartItems.filter(item => item.product._id !== productId));
   };
 
+  // Función para aumentar la cantidad de un producto en el carrito
   const handleIncreaseQuantity = (productId) => {
     setCartItems(cartItems.map(item =>
       item.product._id === productId
@@ -16,6 +38,7 @@ const Cart = ({ cartItems, setCartItems, userId }) => {
     ));
   };
 
+  // Función para disminuir la cantidad de un producto en el carrito
   const handleDecreaseQuantity = (productId) => {
     setCartItems(cartItems.map(item =>
       item.product._id === productId
@@ -24,26 +47,32 @@ const Cart = ({ cartItems, setCartItems, userId }) => {
     ).filter(item => item.quantity > 0));
   };
 
+  // Calcular el total del carrito
   const total = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
+  // Función para manejar el proceso de pago
   const handleCheckout = async () => {
+    const userId = getUserIdFromToken(); // Obtener el ID del usuario desde el token
+
+    if (!userId) {
+      console.error('No se encontró el ID del usuario.');
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:4000/apishoppingCart/shoppingCarts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user: userId, cartItems, total }),
+        body: JSON.stringify({ user: userId, cartItems, total }), // Enviar el ID del usuario en el cuerpo
       });
 
       if (!response.ok) {
         throw new Error('Error en la solicitud de pago.');
       }
 
-      // Guardar los productos en el almacenamiento local para acceder en el formulario de pago
-      localStorage.setItem('cartItems', JSON.stringify(cartItems));
-
-      navigate('/pago');
+      navigate('/pago'); // Redirigir a la página de pago
     } catch (error) {
       console.error('Error al enviar el carrito:', error);
     }
@@ -60,7 +89,7 @@ const Cart = ({ cartItems, setCartItems, userId }) => {
             <li key={item.product._id} className="flex items-center justify-between mb-2 border-b pb-2">
               <img 
                 src={item.product.productImage}
-                alt={item.product.name} 
+                alt={item.product.name}
                 className="w-16 h-16 object-cover mr-4 rounded-md"
               />
               <div className="flex-grow">

@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 // Conectar a la base de datos
-mongoose.connect('mongodb://127.0.0.1:27017/marketplace');
+mongoose.connect('mongodb+srv://jairalejandromerchan:123jair@marketplace.igqus.mongodb.net/marketplace?retryWrites=true&w=majority', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 // Manejar eventos de conexión
 const db = mongoose.connection;
