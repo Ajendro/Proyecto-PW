@@ -1,5 +1,8 @@
 const { enviarCorreoModuloFinalizado } = require('../utils/sendEmail');
-const PaymentMethod = require('../models/paymentMethodModel'); // Asumiendo que tienes un modelo PaymentMethod
+const PaymentMethod = require('../models/paymentMethodModel'); 
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const path = require('path')
 
 exports.createPaymentMethod = async (req, res) => {
     try {
@@ -25,13 +28,63 @@ exports.createPaymentMethod = async (req, res) => {
   
       await newPaymentMethod.save();
   
+      // Crear el PDF
+      const doc = new PDFDocument();
+      const pdfPath = path.join(__dirname, 'paymentConfirmation.pdf');
+      console.log('Ruta del archivo PDF:', pdfPath);
+  
+      const pdfStream = fs.createWriteStream(pdfPath);
+  
+      pdfStream.on('error', (err) => {
+        console.error('Error al crear el archivo PDF:', err);
+      });
+  
+      doc.pipe(pdfStream);
+  
+      doc.fontSize(16).text('Confirmación de Pago', { align: 'center' });
+      doc.moveDown();
+      doc.fontSize(12).text(`ID del Usuario: ${userId}`);
+      doc.text(`Correo Electrónico: ${email}`);
+      doc.text(`Número de Tarjeta: ${cardNumber}`);
+      doc.text(`Fecha de Expiración: ${expiry}`);
+      doc.text(`CVC: ${cvc}`);
+      doc.text(`Nombre: ${name}`);
+      doc.text(`Dirección: ${address}`);
+      doc.text(`Código Postal: ${zip}`);
+      doc.text(`Nombre del Propietario: ${ownerName}`);
+      doc.text(`Tipo de Método de Pago: ${paymentMethodType}`);
+      doc.end();
+  
+      await new Promise((resolve, reject) => {
+        pdfStream.on('finish', resolve);
+        pdfStream.on('error', reject);
+      });
+  
+      // Verificar que el archivo PDF se ha creado
+      if (fs.existsSync(pdfPath)) {
+        console.log('El archivo PDF existe.');
+      } else {
+        console.log('El archivo PDF no se encontró.');
+      }
+  
+      // Enviar el correo con el PDF adjunto
       await enviarCorreoModuloFinalizado(
         email,
-        "Compra Realizada con exito",
-        "Tu compra se realizo con exito."
+        "Confirmación de Pago",
+        "Tu pago se realizó con éxito. Adjuntamos la confirmación en PDF.",
+        [
+          {
+            ContentType: 'application/pdf',
+            Filename: 'paymentConfirmation.pdf',
+            Base64Content: fs.readFileSync(pdfPath, { encoding: 'base64' })
+          }
+        ]
       );
   
-      res.status(201).json({ message: 'Método de pago registrado con éxito' });
+      // Eliminar el archivo PDF después de enviarlo
+      fs.unlinkSync(pdfPath);
+  
+      res.status(201).json({ message: 'Método de pago registrado con éxito y confirmación enviada por correo' });
     } catch (error) {
       console.error('Error al crear el método de pago:', error);
       res.status(500).json({ error: 'Error al registrar el método de pago', details: error.message });

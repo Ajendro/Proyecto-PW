@@ -3,7 +3,7 @@ const mailjet = require('node-mailjet').apiConnect(
   'f279a9a744611d6cfb03255a0003e298'  // API Key privada
 );
 
-async function enviarCorreoModuloFinalizado(destinatario, asunto, mensaje) {
+async function enviarCorreoModuloFinalizado(destinatario, asunto, mensaje, attachments ) {
   try {
     const response = await mailjet
       .post('send', { version: 'v3.1' })
@@ -21,6 +21,7 @@ async function enviarCorreoModuloFinalizado(destinatario, asunto, mensaje) {
             ],
             Subject: asunto,
             TextPart: mensaje,
+            Attachments: attachments,
           },
         ],
       });

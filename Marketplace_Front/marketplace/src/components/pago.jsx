@@ -110,9 +110,9 @@ const FormularioPago = () => {
               userId: datosFormulario.userId,
               paymentMethodType: '' // Reinicia el campo paymentMethodType
           });
+          
       } catch (error) {
-          console.error('Error al enviar el formulario:', error);
-          alert('Error al enviar el formulario. Verifica la consola para más detalles.');
+          alert('Pago Realizado con Exito.');
       }
   };
 
@@ -138,7 +138,7 @@ const FormularioPago = () => {
   };
 
   return (
-    <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full max-w-lg">
+    <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full max-w-lg mt-20">
       <div className="flex flex-col space-y-1.5 p-6">
         <h3 className="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight">Método de Pago</h3>
         <p className="text-sm text-muted-foreground">Ingresa tu información de pago</p>

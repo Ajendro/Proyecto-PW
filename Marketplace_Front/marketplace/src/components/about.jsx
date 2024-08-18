@@ -35,28 +35,28 @@ const AboutSection = () => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
               <div className="bg-background rounded-lg overflow-hidden shadow-md">
-                <div className="h-48 bg-[url('/placeholder-user.jpg')] bg-cover bg-center"></div>
+                <div className="h-48 bg-[url('./herramientas/imagen1.jpg')] bg-cover bg-center"></div>
                 <div className="p-4">
                   <h3 className="text-xl font-bold">María Gómez</h3>
                   <p className="text-muted-foreground">Ceramista</p>
                 </div>
               </div>
               <div className="bg-background rounded-lg overflow-hidden shadow-md">
-                <div className="h-48 bg-[url('/placeholder-user.jpg')] bg-cover bg-center"></div>
+                <div className="h-48 bg-[url('./herramientas/imagen2.jpeg')] bg-cover bg-center"></div>
                 <div className="p-4">
                   <h3 className="text-xl font-bold">Juan Pérez</h3>
                   <p className="text-muted-foreground">Tejedor</p>
                 </div>
               </div>
               <div className="bg-background rounded-lg overflow-hidden shadow-md">
-                <div className="h-48 bg-[url('/placeholder-user.jpg')] bg-cover bg-center"></div>
+                <div className="h-48 bg-[url('./herramientas/imagen3.jpeg')] bg-cover bg-center"></div>
                 <div className="p-4">
                   <h3 className="text-xl font-bold">Ana Rodríguez</h3>
                   <p className="text-muted-foreground">Joyera</p>
                 </div>
               </div>
               <div className="bg-background rounded-lg overflow-hidden shadow-md">
-                <div className="h-48 bg-[url('/placeholder-user.jpg')] bg-cover bg-center"></div>
+                <div className="h-48 bg-[url('./herramientas/imagen4.jpg')] bg-cover bg-center"></div>
                 <div className="p-4">
                   <h3 className="text-xl font-bold">Pedro Sánchez</h3>
                   <p className="text-muted-foreground">Tallador de madera</p>
