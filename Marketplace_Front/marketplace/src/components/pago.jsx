@@ -241,7 +241,18 @@ const FormularioPago = () => {
 
           {/* Formulario específico para Tarjeta de Crédito */}
           {metodoPago === 'TarjetaDeCredito' && (
+            
             <div className="grid gap-2">
+              <div className="grid gap-2">
+                <label className="text-sm font-medium leading-none" htmlFor="email">Correo Electrónico</label>
+                <input
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  id="email"
+                  placeholder="Ingresa tu correo electrónico"
+                  value={datosFormulario.email}
+                  onChange={manejarCambio}
+                />
+              </div>
               <div className="grid gap-2">
                 <label className="text-sm font-medium leading-none" htmlFor="numeroTarjeta">Número de Tarjeta</label>
                 <input

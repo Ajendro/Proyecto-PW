@@ -1,39 +1,43 @@
-// paymentMethodController.js
-const PaymentMethod = require('../models/paymentMethodModel');
-const { sendPaymentConfirmationEmail } = require('../utils/sendEmail');
+const { enviarCorreoModuloFinalizado } = require('../utils/sendEmail');
+const PaymentMethod = require('../models/paymentMethodModel'); // Asumiendo que tienes un modelo PaymentMethod
 
 exports.createPaymentMethod = async (req, res) => {
     try {
-        const { userId, email, cardNumber, expiry, cvc, name, address, zip, ownerName, paymentMethodType } = req.body;
-        console.log('Datos recibidos:', { userId, email, cardNumber, expiry, cvc, name, address, zip, ownerName, paymentMethodType });
-
-        if (!userId || !email) {
-            return res.status(400).json({ error: 'ID del usuario o correo electrónico no proporcionado' });
-        }
-
-        const newPaymentMethod = new PaymentMethod({
-            user: userId,
-            email,
-            cardNumber,
-            expiry,
-            cvc,
-            name,
-            address,
-            zip,
-            ownerName,
-            paymentMethodType,
-        });
-
-        await newPaymentMethod.save();
-
-        await sendPaymentConfirmationEmail(email, cardNumber, paymentMethodType);
-
-        res.status(201).json({ message: 'Método de pago registrado con éxito' });
+      const { userId, email, cardNumber, expiry, cvc, name, address, zip, ownerName, paymentMethodType } = req.body;
+      console.log('Datos recibidos:', { userId, email, cardNumber, expiry, cvc, name, address, zip, ownerName, paymentMethodType });
+  
+      if (!userId || !email) {
+        return res.status(400).json({ error: 'ID del usuario o correo electrónico no proporcionado' });
+      }
+  
+      const newPaymentMethod = new PaymentMethod({
+        user: userId,
+        email,
+        cardNumber,
+        expiry,
+        cvc,
+        name,
+        address,
+        zip,
+        ownerName,
+        paymentMethodType,
+      });
+  
+      await newPaymentMethod.save();
+  
+      await enviarCorreoModuloFinalizado(
+        email,
+        "Compra Realizada con exito",
+        "Tu compra se realizo con exito."
+      );
+  
+      res.status(201).json({ message: 'Método de pago registrado con éxito' });
     } catch (error) {
-        console.error('Error al crear el método de pago:', error);
-        res.status(500).json({ error: 'Error al registrar el método de pago', details: error.message });
+      console.error('Error al crear el método de pago:', error);
+      res.status(500).json({ error: 'Error al registrar el método de pago', details: error.message });
     }
-};
+  };
+
 
 exports.getPaymentMethods = async (req, res) => {
     try {

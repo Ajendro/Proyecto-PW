@@ -1,33 +1,35 @@
-const nodemailer = require('nodemailer');
+const mailjet = require('node-mailjet').apiConnect(
+  '05b631ff4c917c0e70cd81e6b439b5ff', // API Key pública
+  'f279a9a744611d6cfb03255a0003e298'  // API Key privada
+);
 
-const transportLisa = {
-    tls: { rejectUnauthorized: false },
-    host: "smtp.gmail.com",
-    secure: true,
-    auth: {
-        user: "fintechnc@gmail.com",
-        pass: "bplwnzddzukclgpm"
-    }
-};
-
-async function sendPaymentConfirmationEmail(email, cardNumber, paymentMethodType) {
-    const transporter = nodemailer.createTransport(transportLisa);
-
-    const message = {
-        from: `LISA <${transportLisa.auth.user}>`, // sender address
-        to: email,
-        subject: 'Payment Method Confirmation',
-        text: `Your payment method has been successfully added.\nCard Number: ${cardNumber}\nPayment Method Type: ${paymentMethodType}`,
-    };
-
-    try {
-        const info = await transporter.sendMail(message);
-        console.log('Información de envío de correo:', info);
-        return info;
-    } catch (error) {
-        console.error('Error al enviar el correo:', error);
-        throw new Error('Error al enviar el correo');
-    }
+async function enviarCorreoModuloFinalizado(destinatario, asunto, mensaje) {
+  try {
+    const response = await mailjet
+      .post('send', { version: 'v3.1' })
+      .request({
+        Messages: [
+          {
+            From: {
+              Email: 'merchanjair1@gmail.com', 
+              Name: 'Jair',
+            },
+            To: [
+              {
+                Email: destinatario,
+              },
+            ],
+            Subject: asunto,
+            TextPart: mensaje,
+          },
+        ],
+      });
+    console.log('Correo enviado exitosamente:', response.body);
+    return response.body;
+  } catch (err) {
+    console.error('Error enviando correo:', err);
+    throw err;
+  }
 }
 
-module.exports = sendPaymentConfirmationEmail;
+module.exports = { enviarCorreoModuloFinalizado };
